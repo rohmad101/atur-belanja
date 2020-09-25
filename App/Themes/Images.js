@@ -1,6 +1,6 @@
 // leave off @2x/@3x
 const images = {
-  logo: require('../Images/ir.png'),
+  logo: require('../Images/logo.png'),
   clearLogo: require('../Images/top_logo.png'),
   launch: require('../Images/launch-icon.png'),
   ready: require('../Images/your-app.png'),
@@ -19,7 +19,27 @@ const images = {
   chevronRight: require('../Images/Icons/chevron-right.png'),
   hamburger: require('../Images/Icons/hamburger.png'),
   backButton: require('../Images/Icons/back-button.png'),
-  closeButton: require('../Images/Icons/close-button.png')
+  closeButton: require('../Images/Icons/close-button.png'),
+  background_login: require('../Images/background_login.png'),
+  user_icon: require('../Images/Icons/user_icon.png'),
+  password_icon: require('../Images/Icons/password_icon.png'),
+  icon_google: require('../Images/Icons/icon_google.png'),
+  icon_facebook: require('../Images/Icons/icon_facebook.png'),
+  background_singup: require('../Images/background_singup.png'),
+  icon_gift: require('../Images/Icons/gift.png'),
+  icon_notif: require('../Images/Icons/notif.png'),
+  icon_add:  require('../Images/Icons/icon_addons.png'),
+  icon_shipping: require('../Images/Icons/icon_shipping.png'),
+  icon_order: require('../Images/Icons/icon_order.png'),
+  icon_courier: require('../Images/Icons/icon_courier.png'),
+  icon_addons: require('../Images/Icons/icon_addons.png'),
+  icon_more: require('../Images/Icons/icon_shipping.png'),
+  menu_info_gross: require('../Images/menu_info_gross.png'),
+  menu_info_sold: require('../Images/menu_info_sold.png'),
+  menu_info_process: require('../Images/menu_info_process.png'),
+  menu_info_order: require('../Images/menu_info_order.png'),
+  
+
 }
 
 export default images

@@ -10,11 +10,14 @@ target 'AturBelanja' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNI18n', :path => '../node_modules/react-native-i18n'
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   target 'AturBelanjaTests' do
     inherit! :complete

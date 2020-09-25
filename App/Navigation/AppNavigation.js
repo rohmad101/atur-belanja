@@ -1,4 +1,6 @@
 import { createAppContainer } from 'react-navigation'
+import DashboardScreen from '../Containers/DashboardScreen'
+import OnBoardingScreen from '../Containers/OnBoardingScreen'
 import SingupScreen from '../Containers/SingupScreen'
 import LoginScreen from '../Containers/LoginScreen'
 import { createStackNavigator } from 'react-navigation-stack';
@@ -8,13 +10,15 @@ import styles from './Styles/NavigationStyles'
 
 // Manifest of possible screens
 const PrimaryNav = createStackNavigator({
+  DashboardScreen: { screen: DashboardScreen },
+  OnBoardingScreen: { screen: OnBoardingScreen },
   SingupScreen: { screen: SingupScreen },
   LoginScreen: { screen: LoginScreen },
   LaunchScreen: { screen: LaunchScreen }
 }, {
   // Default config for all screens
   headerMode: 'none',
-  initialRouteName: 'LoginScreen',
+  initialRouteName: 'OnBoardingScreen',
   navigationOptions: {
     headerStyle: styles.header
   }

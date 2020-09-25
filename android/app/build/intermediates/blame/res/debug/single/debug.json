@@ -136,6 +136,10 @@
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/drawable-xxxhdpi-v4/abc_btn_check_to_on_mtrl_015.png"
     },
     {
+        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/mipmap-xxhdpi_awal.png.flat",
+        "source": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/src/main/res/mipmap-xxhdpi/awal.png"
+    },
+    {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/drawable-hdpi-v4_design_ic_visibility_off.png.flat",
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/res/drawable-hdpi-v4/design_ic_visibility_off.png"
     },
@@ -468,12 +472,12 @@
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/interpolator/btn_checkbox_unchecked_mtrl_animation_interpolator_0.xml"
     },
     {
-        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/layout_abc_tooltip.xml.flat",
-        "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/layout/abc_tooltip.xml"
-    },
-    {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/color_abc_tint_btn_checkable.xml.flat",
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/color/abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/layout_abc_tooltip.xml.flat",
+        "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/layout/abc_tooltip.xml"
     },
     {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi-v4_abc_text_select_handle_middle_mtrl_dark.png.flat",
@@ -726,6 +730,10 @@
     {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/drawable-mdpi-v4_abc_list_focused_holo.9.png.flat",
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/drawable-mdpi-v4/abc_list_focused_holo.9.png"
+    },
+    {
+        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/mipmap-hdpi_awal.png.flat",
+        "source": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/src/main/res/mipmap-hdpi/awal.png"
     },
     {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/drawable-ldrtl-xhdpi-v17_abc_ic_menu_cut_mtrl_alpha.png.flat",
@@ -1916,6 +1924,10 @@
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/drawable-xhdpi-v4/abc_ic_star_black_36dp.png"
     },
     {
+        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/mipmap-xhdpi_awal.png.flat",
+        "source": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/src/main/res/mipmap-xhdpi/awal.png"
+    },
+    {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/interpolator-v21_mtrl_fast_out_linear_in.xml.flat",
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/863e0c3c6716935cd3657ad638fd992d/material-1.1.0/res/interpolator-v21/mtrl_fast_out_linear_in.xml"
     },
@@ -2470,6 +2482,10 @@
     {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/drawable-xxxhdpi-v4_abc_ic_star_black_36dp.png.flat",
         "source": "/home/rd/.gradle/caches/transforms-2/files-2.1/1cb9b9ea592aa2ea85233be252327dcf/appcompat-1.1.0/res/drawable-xxxhdpi-v4/abc_ic_star_black_36dp.png"
+    },
+    {
+        "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/mipmap-mdpi_awal.png.flat",
+        "source": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/src/main/res/mipmap-mdpi/awal.png"
     },
     {
         "merged": "/home/rd/Documents/Aturtoko/atur-belanja/android/app/build/intermediates/res/merged/debug/layout_text_view_without_line_height.xml.flat",
