@@ -20,18 +20,17 @@ import { NavigationAction } from 'react-navigation';
 export function * getLogin (api, action) {
  
   const { data } = action
-  console.tron.log(data)
   // get current data from Store
   // const currentData = yield select(LoginSelectors.getData)
   // make the call to the api
   const response = yield call(api.getlogin, data)
-
+  const Auth = yield call(api.getAuth, response.data.data.authorization_code)
   // success?
-  if (response.ok) {
+  if (Auth.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
-    yield put(LoginActions.loginSuccess(response.data))
-    yield put (AuthActions.authSuccess(response.data))
+    yield put(LoginActions.loginSuccess(Auth.data))
+    yield put (AuthActions.authSuccess(Auth.data))
     NavigationAction.reset('LoginScreen')
     // Alert.alert('Berhasil')
   } else {

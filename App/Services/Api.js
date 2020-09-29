@@ -41,7 +41,8 @@ const create = (baseURL = URL) => {
   const getUser = (username) => api.get('search/users', {q: username})
   const getlogin = (payload) => api.post('/mt/login',payload)
   const getregister = (payload) => api.post('/mt/register',payload)
-
+  const getprofile =(payload)=> api.get('/mt/userdetail',{}, { headers: { Authorization: payload } })
+  const getAuth =(payload)=> api.post('/mt/validation',{ "authorization_code": payload })
   // ------
   // STEP 3
   // ------
@@ -60,7 +61,9 @@ const create = (baseURL = URL) => {
     getRate,
     getUser,
     getlogin,
-    getregister
+    getregister,
+    getprofile,
+    getAuth
   }
 }
 

@@ -9,17 +9,21 @@ import { Images } from '../Themes'
 import { SearchBar,Header,Icon,Image,Card,ListItem,Button,Overlay, Divider } from 'react-native-elements';
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 import AuthActions from '../Redux/AuthRedux'
+import ProfileActions from '../Redux/ProfileRedux'
 
 // Styles
 import styles from './Styles/DashboardScreenStyle'
 import { bindActionCreators } from 'redux'
+import { BarChart, StackedBarChart } from 'react-native-chart-kit';
+import reactotron from 'reactotron-react-native';
 
 class DashboardScreen extends Component {
   state={
-    selectedMenu:'DASHBOARD',
+    selectedMenu:'SETTINGS',
     search:'',
     visible:false,
     slider1ActiveSlide:0,
+    expandsDashboard:false,
     suggestion:[ {
       title: 'Beautiful and dramatic Antelope Canyon',
       subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
@@ -51,6 +55,23 @@ class DashboardScreen extends Component {
       illustration: 'https://i.imgur.com/lceHsT6l.jpg'
   }]
   }
+
+
+  componentDidUpdate(){
+    const { dataProfile,fetchingProfile,payloadProfile,errorProfile,profileRequest,auth }= this.props
+    if(this.state.selectedMenu === 'SETTINGS') {
+          if(!payloadProfile){
+              if(!fetchingProfile) {
+                // alert(JSON.stringify(auth.payload.data.authorization_code))
+                profileRequest(auth.data.access_token)
+              }
+          }else{
+            // alert('data profile',JSON.stringify(payloadProfile))
+          }
+    }
+  }
+
+
   toggleOverlay = () => {
     this.setState({visible:!this.state.visible});
   };
@@ -102,6 +123,32 @@ class DashboardScreen extends Component {
   //   )
   // }
   Dashboard =()=>{
+    const data = {
+      labels: [1,2,3,4,5,6,7,8,9],
+      legend: [],
+      data: [
+        [60],
+        [30],
+        [30],
+        [30],
+        [30],
+        [30],
+        [30],
+        [30],
+        [30]
+      ],
+      barColors: ["green"]
+    };
+    const chartConfig = {
+      backgroundGradientFrom: "#1E2923",
+      backgroundGradientFromOpacity: 0,
+      backgroundGradientTo: "#08130D",
+      backgroundGradientToOpacity: 0.5,
+      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+      strokeWidth: 2, // optional, default 3
+      barPercentage: 0.5,
+      useShadowColorFromDataset: false // optional
+    };
     return(
       <ScrollView>
         <View style={{flex:1}}>
@@ -205,7 +252,7 @@ class DashboardScreen extends Component {
                   <Text style={{color:'#2D4070', fontSize:28, fontStyle:'italic',fontWeight:'bold'}}>Monthly Item Sales</Text>
                 </View>
                 {/* menu sales chart */}
-                <View style={{width:'100%',height:400,backgroundColor:'#455A90',marginTop:-130,borderTopRightRadius:150,alignItems:'center',borderBottomLeftRadius:50,borderBottomRightRadius:50}}>
+                <View style={{width:'100%',paddingBottom:this.state.expandsDashboard?120:80,backgroundColor:'#455A90',marginTop:-130,borderTopRightRadius:150,alignItems:'center',borderBottomLeftRadius:50,borderBottomRightRadius:50}}>
                   <View style={{width:'100%',flexDirection:'row', padding:20}}>
                     <View style={{width:'60%',flexDirection:'column',alignItems:'flex-end'}}>      
                       <Text style={{color:'#fff',fontSize:24, fontWeight:'bold',fontStyle:'italic'}}>Sales Chart</Text>
@@ -213,8 +260,31 @@ class DashboardScreen extends Component {
                     </View>
                     <TouchableOpacity onPress={()=>Alert.alert('on development')} style={{width:'20%',alignItems:'flex-end',justifyContent:'center'}}><Icon name="menu" color="black" size={24} style={{backgroundColor:'#50E348'}}></Icon></TouchableOpacity>
                   </View>
+                  <StackedBarChart
+                    // style={graphStyle}
+                    data={data}
+                    width={Dimensions.get('screen').width*0.95}
+                    yAxisLabel="Rp."
+                    height={220}
+                    chartConfig={chartConfig}
+                  />
+                  {this.state.expandsDashboard?
+                   <View style={{width:'100%',height:200,justifyContent:'center',flexDirection:'row',marginTop:50}}>
+                    <View style={{width:'50%',marginTop:48}}>
+                     <Image source={Images.expands_dashboard} style={{width:120,height:200}}/></View>
+                    <View style={{width:'50%',flexDirection:'row'}}>
+                      <View style={{width:'100%'}}>
+                        <Text style={{fontSize:28,fontWeight:'700',lineHeight:32,fontStyle:'italic',color:'white'}}>Statistics</Text>
+                        <View style={{width:'100%',backgroundColor:'#E1E7ED',height:200,marginTop:24,borderTopLeftRadius:20,borderBottomLeftRadius:20}}>
+                        </View>
+                      </View>
+                     <Image source={Images.expands_dashboard} style={{width:100,height:100}}/></View>
+                   </View>:
+                   null  
+                }
                 </View>
-                <TouchableOpacity onPress={()=>Alert.alert('on development')} style={{width:'100%',alignItems:'center',justifyContent:'center'}}><Icon name="arrow-drop-down" color="black" size={32} style={{backgroundColor:'#C4C4C4'}}></Icon></TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.setState({expandsDashboard:!this.state.expandsDashboard})} style={{width:'100%',alignItems:'center',justifyContent:'center'}}><Icon name="arrow-drop-down" color="black" size={32} style={{backgroundColor:'#C4C4C4'}}></Icon></TouchableOpacity>
+               
                 <Divider style={{ backgroundColor: 'white',width:'100%',marginTop:20,height:8 }} />
                 {/* Aricle Suggestions */}
                 <View style={{width:'100%',height:80,flexDirection:'row'}}>
@@ -237,14 +307,14 @@ class DashboardScreen extends Component {
                   hasParallaxImages={true}
                   inactiveSlideScale={0.94}
                   inactiveSlideOpacity={0.7}
-                  // inactiveSlideShift={20}
+                  inactiveSlideShift={20}
                   containerCustomStyle={{
                     marginTop: 15,
                     overflow: 'visible' // for custom animations
                 }}
                   contentContainerCustomStyle={{paddingVertical: 10}}
                   loop={true}
-                  loopClonesPerSide={1}
+                  // loopClonesPerSide={1}
                   autoplay={true}
                   autoplayDelay={500}
                   autoplayInterval={3000}
@@ -264,8 +334,8 @@ class DashboardScreen extends Component {
                   inactiveDotColor={'#000'}
                   inactiveDotOpacity={0.4}
                   inactiveDotScale={0.6}
-                  carouselRef={this._slider1Ref}
-                  tappableDots={!!this._slider1Ref}
+                  // carouselRef={this._slider1Ref}
+                  // tappableDots={!!this._slider1Ref}
                 />
             </View>
             </View>
@@ -326,16 +396,159 @@ class DashboardScreen extends Component {
     )
   }
   Settings =()=>{
+    const {payloadProfile} = this.props
+    const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
     return(
       <ScrollView>
-      <View style={{flex:1}}>
-          <View style={styles.header}>
-            <Image style={styles.avatar} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
+      <View style={{flex:1,margin:12,paddingVertical:32}}>
+          <View style={{width:'100%', flexDirection:'row'}}>
+            <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
+            <View style={{justifyContent:'center'}}>
+              <Text style={{fontWeight:'bold',paddingLeft:8}}>{display_name}</Text>
+              <View style={{flexDirection:'row'}}>
+                <Image style={{width:20,height:20}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                <Text style={{color:'grey'}}>{roles}</Text>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+              </View>
+            </View>
           </View>
+          {/* menu profile */}
+          <View style={{flexDirection:'row',marginTop:12, width:'100%',alignSelf:'baseline',paddingVertical:20,borderColor:'grey', borderWidth:0.5, borderRadius:4, justifyContent:'space-around',alignItems:'center'}}>
+            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                <Text style={{color:'grey'}}>TokoMember</Text>
+                <Text style={{fontWeight:'bold'}}>0 Member</Text>
+            </View>
+            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                <Text style={{color:'grey'}}>TopQuest</Text>
+                <Text style={{fontWeight:'bold'}}>3 Tantangan</Text>
+            </View>
+            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                <Text style={{color:'grey'}}>Kupon Saya</Text>
+                <Text style={{fontWeight:'bold'}}>11 Kupon</Text>
+            </View>
+          </View>
+          {/* menu dana */}
+          <View style={{flexDirection:'column',marginTop:12, width:'100%',alignSelf:'baseline',paddingBottom:12,borderColor:'grey', borderWidth:0.5, borderRadius:4}}>
+            <Text style={{fontWeight:'bold',fontSize:16,padding:12}}> Dana di Atur Toko</Text>
+            <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>
+              
+              <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{color:'grey'}}>Aktivasi</Text>
+                  <Text style={{fontWeight:'bold'}}>OVO</Text>
+              </View>
+              <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{fontWeight:'bold'}}>Rp.0</Text>
+                  <Text style={{color:'grey'}}>Saldo</Text>
+              </View>
+            </View>  
+          </View>
+          {/* menu Transaksi */}
+          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Transaksi</Text>
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Menunggu Pembayaran</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Semua transaksi yang belum dibayar</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View>  
+          </View>   
+           {/* daftar transaksi */}
+          <View style={{flexDirection:'column',marginTop:4, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+            <Text style={{fontSize:16,padding:12}}> Daftar Transaksi</Text>
+            <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>  
+              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text>Belanja</Text>
+              </View>
+              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text>Top-up &{'\n'} Tagihan</Text>
+              </View>
+              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text>Pesawat</Text>
+              </View>
+              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{justifyContent:'center'}}>Lihat{'\n'}Semua</Text>
+              </View>
+            </View>  
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Ulasan</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Berikan Penilaian dan ulasan Product</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Komplain Sebagai Pembeli</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat status komplain</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          {/* favorit saya */}
+          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', paddingBottom:20}}>
+            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Favorit Saya</Text>
+          </View>   
+          {/* isi menu favorit */}
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Topik Favorit</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur topik favorit saya</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Terakhir Dilihat</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Cek Produk terakhir yang dilihat</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Wishlist</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat Produk yang sudah Anda wishlist</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Toko Favorit</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat Toko yang sudah Anda favoritkan</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Langganan</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur & bayar tagihan dalam satu tempat</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+          </View> 
+          {/* Atur toko care */}
+          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>AturToko Care</Text>
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
+              <View style={{flexDirection:'column'}}>
+                <Text style={{fontWeight:'normal',fontSize:18}}>Pusat bantuan</Text> 
+                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat solusi terbaik dari AturToko Care</Text> 
+              </View>
+              <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View>  
+          </View>  
+
           <View style={styles.body}>
-            <View style={styles.bodyContent}>
-              <Text style={styles.name}>John Doe</Text>
-              <Text style={styles.info}>UX Designer / Mobile developer</Text>
+            {/* <View style={styles.bodyContent}>
+              
               <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
               <TouchableOpacity style={styles.buttonContainer} onPress={()=> Alert.alert('Whoopss','On Development')}>
                 <Text>Edit Profile</Text>  
@@ -346,7 +559,7 @@ class DashboardScreen extends Component {
                 }}>
                 <Text>Logout</Text> 
               </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
       </View>
       </ScrollView>
@@ -555,11 +768,16 @@ class DashboardScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    dataProfile:state.profile.data,
+    fetchingProfile:state.profile.fetching,
+    payloadProfile:state.profile.payload,
+    errorProfile:state.profile.error,
+    auth:state.auth.payload
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(AuthActions, dispatch)
+  return bindActionCreators(Object.assign(AuthActions,ProfileActions) , dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen)

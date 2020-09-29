@@ -9,6 +9,7 @@ import { StartupTypes } from '../Redux/StartupRedux'
 import { GithubTypes } from '../Redux/GithubRedux'
 import { LoginTypes } from '../Redux/LoginRedux'
 import { RegisterTypes } from '../Redux/RegisterRedux'
+import { ProfileTypes } from '../Redux/ProfileRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -16,6 +17,7 @@ import { startup } from './StartupSagas'
 import { getUserAvatar } from './GithubSagas'
 import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
+import { getProfile } from './ProfileSagas';
 
 /* ------------- API ------------- */
 
@@ -31,8 +33,9 @@ export default function * root () {
     takeLatest(StartupTypes.STARTUP, startup),
 
     // some sagas receive extra parameters in addition to an action
-    takeLatest(GithubTypes.USER_REQUEST, getUserAvatar, api),
+    // takeLatest(GithubTypes.USER_REQUEST, getUserAvatar, api),
     takeLatest(LoginTypes.LOGIN_REQUEST, getLogin, api),
-    takeLatest(RegisterTypes.REGISTER_REQUEST,getRegister,api)
+    takeLatest(RegisterTypes.REGISTER_REQUEST,getRegister,api),
+    takeLatest(ProfileTypes.PROFILE_REQUEST,getProfile,api)
   ])
 }

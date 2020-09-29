@@ -38,6 +38,7 @@ const images = {
   menu_info_sold: require('../Images/menu_info_sold.png'),
   menu_info_process: require('../Images/menu_info_process.png'),
   menu_info_order: require('../Images/menu_info_order.png'),
+  expands_dashboard: require('../Images/expands_dashboard.png'),
   
 
 }
