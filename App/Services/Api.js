@@ -43,6 +43,7 @@ const create = (baseURL = URL) => {
   const getregister = (payload) => api.post('/mt/register',payload)
   const getprofile =(payload)=> api.get('/mt/userdetail',{}, { headers: { Authorization: payload } })
   const getAuth =(payload)=> api.post('/mt/validation',{ "authorization_code": payload })
+  const getproduct =(payload)=> api.post('/mt/list',{}, { headers: { Authorization: payload }})
   // ------
   // STEP 3
   // ------
@@ -63,7 +64,8 @@ const create = (baseURL = URL) => {
     getlogin,
     getregister,
     getprofile,
-    getAuth
+    getAuth,
+    getproduct
   }
 }
 

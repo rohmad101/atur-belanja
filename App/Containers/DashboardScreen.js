@@ -10,64 +10,92 @@ import { SearchBar,Header,Icon,Image,Card,ListItem,Button,Overlay, Divider } fro
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 import AuthActions from '../Redux/AuthRedux'
 import ProfileActions from '../Redux/ProfileRedux'
+import ProductActions from '../Redux/ProductRedux'
 
 // Styles
 import styles from './Styles/DashboardScreenStyle'
 import { bindActionCreators } from 'redux'
 import { BarChart, StackedBarChart } from 'react-native-chart-kit';
 import reactotron from 'reactotron-react-native';
+import { TextInput } from 'react-native-gesture-handler';
 
 class DashboardScreen extends Component {
   state={
-    selectedMenu:'SETTINGS',
+    selectedMenu:'DASHBOARD',
     search:'',
     visible:false,
     slider1ActiveSlide:0,
     expandsDashboard:false,
-    suggestion:[ {
-      title: 'Beautiful and dramatic Antelope Canyon',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-      illustration: 'https://i.imgur.com/UYiroysl.jpg'
-  },
-  {
-      title: 'Earlier this morning, NYC',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://i.imgur.com/UPrs1EWl.jpg'
-  },
-  {
-      title: 'White Pocket Sunset',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
-      illustration: 'https://i.imgur.com/MABUbpDl.jpg'
-  },
-  {
-      title: 'Acrocorinth, Greece',
-      subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-      illustration: 'https://i.imgur.com/KZsmUi2l.jpg'
-  },
-  {
-      title: 'The lone tree, majestic landscape of New Zealand',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://i.imgur.com/2nCt3Sbl.jpg'
-  },
-  {
-      title: 'Middle Earth, Germany',
-      subtitle: 'Lorem ipsum dolor sit amet',
-      illustration: 'https://i.imgur.com/lceHsT6l.jpg'
-  }]
+    suggestion:[ 
+      {
+        title: 'Beautiful and dramatic Antelope Canyon',
+        subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+        illustration: 'https://i.imgur.com/UYiroysl.jpg'
+      },
+      {
+          title: 'Earlier this morning, NYC',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/UPrs1EWl.jpg'
+      },
+      {
+          title: 'White Pocket Sunset',
+          subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
+          illustration: 'https://i.imgur.com/MABUbpDl.jpg'
+      },
+      {
+          title: 'Acrocorinth, Greece',
+          subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+          illustration: 'https://i.imgur.com/KZsmUi2l.jpg'
+      },
+      {
+          title: 'The lone tree, majestic landscape of New Zealand',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/2nCt3Sbl.jpg'
+      },
+      {
+          title: 'Middle Earth, Germany',
+          subtitle: 'Lorem ipsum dolor sit amet',
+          illustration: 'https://i.imgur.com/lceHsT6l.jpg'
+      }
+    ]
   }
 
-
-  componentDidUpdate(){
-    const { dataProfile,fetchingProfile,payloadProfile,errorProfile,profileRequest,auth }= this.props
+  componentDidMount(){
+    // const { dataProfile,fetchingProfile,payloadProfile,navigation,productRequest,auth }= this.props
+    // productRequest(auth.data.access_token)
+ 
+  }
+  componentDidUpdate(prevProps, prevState, snapshot){
+    const { dataProfile,fetchingProfile,payloadProfile,errorProfile,productRequest,profileRequest,auth }= this.props
     if(this.state.selectedMenu === 'SETTINGS') {
-          if(!payloadProfile){
-              if(!fetchingProfile) {
-                // alert(JSON.stringify(auth.payload.data.authorization_code))
-                profileRequest(auth.data.access_token)
-              }
-          }else{
-            // alert('data profile',JSON.stringify(payloadProfile))
+      if(prevState.selectedMenu !== this.state.selectedMenu){
+        if(payloadProfile === null){
+          if(!fetchingProfile) {
+            // alert(JSON.stringify(auth.payload.data.authorization_code))
+            reactotron.log('auth',auth)
+            profileRequest(auth.data.access_token)
           }
+        }else{
+          // alert('data profile',JSON.stringify(payloadProfile))
+        }
+      }  
+    }
+    if(this.state.selectedMenu === 'PRODUCT') {
+      if(prevState.selectedMenu !== this.state.selectedMenu){
+        if(payloadProfile === null){
+          if(!fetchingProfile) {
+            // alert(JSON.stringify(auth.payload.data.authorization_code))
+            reactotron.log('auth',auth)
+            productRequest(auth.data.access_token)
+          }
+        }else{
+          // alert('data profile',JSON.stringify(payloadProfile))
+        }
+      }  
+    }
+    if(auth){
+    }else{
+      navigation.reset('LoginScreen')
     }
   }
 
@@ -269,6 +297,7 @@ class DashboardScreen extends Component {
                     chartConfig={chartConfig}
                   />
                   {this.state.expandsDashboard?
+                  // menu expands dashboard
                    <View style={{width:'100%',height:200,justifyContent:'center',flexDirection:'row',marginTop:50}}>
                     <View style={{width:'50%',marginTop:48}}>
                      <Image source={Images.expands_dashboard} style={{width:120,height:200}}/></View>
@@ -276,6 +305,16 @@ class DashboardScreen extends Component {
                       <View style={{width:'100%'}}>
                         <Text style={{fontSize:28,fontWeight:'700',lineHeight:32,fontStyle:'italic',color:'white'}}>Statistics</Text>
                         <View style={{width:'100%',backgroundColor:'#E1E7ED',height:200,marginTop:24,borderTopLeftRadius:20,borderBottomLeftRadius:20}}>
+                          <View style={{backgroundColor:'#E3CA43',width:'100%',height:40,borderTopLeftRadius:20,alignItems:'center',justifyContent:'center'}}>
+                            <Text style={{color:'#455A90', fontWeight:'bold', fontSize:20}}>July 2, 2020</Text>
+                          </View>
+                          <View style={{width:'100%',height:'70%',borderTopLeftRadius:20,alignItems:'center',justifyContent:'space-around'}}>
+                            <Text style={{color:'#CD8906', fontWeight:'bold',fontSize:16}}>Sold Item</Text>
+                            <Text style={{marginTop:'-10%', fontWeight:'bold', color:'#4E944C'}}>40</Text>
+                            <Text style={{color:'#CD8906', fontWeight:'bold',fontSize:16}}>Gross Profit</Text>
+                            <Text style={{marginTop:'-10%', fontWeight:'bold', color:'#4E944C'}}>Rp 500.000.000</Text>
+                          </View>
+                    
                         </View>
                       </View>
                      <Image source={Images.expands_dashboard} style={{width:100,height:100}}/></View>
@@ -346,11 +385,95 @@ class DashboardScreen extends Component {
       
     )
   }
-  Product =()=>{
+  filterList(list) {
+    return list.filter(
+      (listItem) =>
+        listItem.name
+          .toLowerCase()
+          .includes(this.state.search.toLowerCase()) ||
+        listItem.sku_id.toLowerCase().includes(this.state.search.toLowerCase()),
+    );
+  }
+  Product =(search)=>{
+    const {product}=this.props
+    const list = [
+      {artist: 'The Weeknd', song: 'Blinding Lights'},
+      {artist: 'Drake', song: 'Toosie Slide'},
+      {artist: 'Roddy Ricch', song: 'The Box'},
+      {artist: 'Dua Lipa', song: 'Dont Start Now'},
+    ];
     return(
-      <View>
-        <Text>Product</Text>
+      <ScrollView>
+        {/* <SearchBar
+          placeholder="coba cari disini ....."
+          onChangeText={this.updateSearch}
+          value={search}
+          leftIcon={Images.logo}
+          lightTheme
+          round
+          // placeholderTextColor={'#add8e6'}
+          containerStyle={{backgroundColor: '#5BE553', borderWidth: 1, borderRadius: 5}}
+          showLoading={true}
+          style={{backgroundColor:"white", borderRadius:8}}
+          inputStyle={{fontStyle:'italic'}}
+          inputContainerStyle={{backgroundColor: '#5BE553'}}
+          InputComponent
+        /> */}
+      <View style={{alignItems: 'center',height: Dimensions.get('screen').height}}>
+        <View style={{width:'100%', backgroundColor:'#5BE553',height:'10%',minHeight:80, justifyContent:'center',alignItems:'center'}}>
+          <TextInput
+            value={search}
+            onChangeText={(search) => this.setState({search})}
+            placeholder="Find product or SKU"
+            style={{   fontSize: 16,
+              margin: 10,
+              width: '90%',
+              height: 50,borderRadius:8, backgroundColor:'white'}}
+          />
+        </View>
+        <View style={{width:'100%', backgroundColor:'#2D4070',height:'10%',minHeight:80, justifyContent:'space-around',alignItems:'center',flexDirection:'row'}}>
+         <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>Alert.alert('on development',' this feature still on development')}>
+          <Image source={Images.add} style={{width:30,height:30}}/>
+          <Text style={{color:'white', fontSize:14}}>Add</Text>
+         </TouchableOpacity>
+         <Divider style={{height:'60%',width:1,backgroundColor:'white'}}/>
+         <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>Alert.alert('on development',' this feature still on development')}>
+          <Image source={Images.filter} style={{width:30,height:30}}/>
+          <Text style={{color:'white', fontSize:14}}>Filter</Text>
+         </TouchableOpacity>
+         <Divider style={{height:'60%',width:1,backgroundColor:'white'}}/>
+         <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>Alert.alert('on development',' this feature still on development')}>
+          <Text style={{color:'white', fontSize:24, fontWeight:'bold'}}>. . .</Text>
+          <Text style={{color:'white', fontSize:14}}>More</Text>
+         </TouchableOpacity>
+        </View>
+        <View style={{width:'75%',paddingTop:24}}>
+          <Text style={{color:'#2D4070'}}>3 Product</Text>
+        </View>
+        { product && product.data && product.data.length>0 ?
+        this.filterList(product.data).map((listItem, index) => (
+           <View style={{alignItems: 'center',padding: 24, width: '90%',flexDirection:'column'}}>
+             <View style={{flexDirection:'row',width:'100%'}}>
+               <Image source={{uri:listItem.url}} style={{width:80,height:100}}/>
+               <View style={{flexDirection:'column',width:'100%', paddingLeft:12}}>
+                 <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}>{listItem.name}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Rp {listItem.price}</Text>
+                 <View style={{flexDirection:'row',width:'70%',justifyContent:'space-between'}}>
+                  <Text style={{color:'#2D4070'}}>Stock: 5</Text>
+                  <Text style={{color: 'white',fontSize: 12,backgroundColor:'#6A8E78',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>Variant</Text>
+                  <Text style={{color: 'black',fontSize: 12,backgroundColor:'#E3CA43',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>OwnStock</Text>
+                 </View>
+              </View>
+            </View>
+            <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between'}}>
+              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Archive</Text>
+              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Edit</Text>
+              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Other</Text>
+            </View>
+         </View>
+        )):null}
       </View>
+      </ScrollView>
     )
   }
   Order =()=>{
@@ -397,173 +520,182 @@ class DashboardScreen extends Component {
   }
   Settings =()=>{
     const {payloadProfile} = this.props
-    const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
-    return(
-      <ScrollView>
-      <View style={{flex:1,margin:12,paddingVertical:32}}>
-          <View style={{width:'100%', flexDirection:'row'}}>
-            <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
-            <View style={{justifyContent:'center'}}>
-              <Text style={{fontWeight:'bold',paddingLeft:8}}>{display_name}</Text>
-              <View style={{flexDirection:'row'}}>
-                <Image style={{width:20,height:20}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                <Text style={{color:'grey'}}>{roles}</Text>
+    if(payloadProfile && payloadProfile.data) {
+      const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
+      return(
+        <ScrollView>
+        <View style={{flex:1,margin:12,paddingVertical:12}}>
+            <View style={{width:'100%', flexDirection:'row'}}>
+              <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
+              <View style={{justifyContent:'center'}}>
+                <Text style={{fontWeight:'bold',paddingLeft:8}}>{display_name}</Text>
+                <View style={{flexDirection:'row'}}>
+                  <Image style={{width:20,height:20}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{color:'grey'}}>{roles}</Text>
+                  <Icon name="chevron-right"  style={{width:20,height:20}}/>
+                </View>
+              </View>
+            </View>
+            {/* menu profile */}
+            <View style={{flexDirection:'row',marginTop:12, width:'100%',alignSelf:'baseline',paddingVertical:20,borderColor:'grey', borderWidth:0.5, borderRadius:4, justifyContent:'space-around',alignItems:'center'}}>
+              <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{color:'grey'}}>TokoMember</Text>
+                  <Text style={{fontWeight:'bold'}}>0 Member</Text>
+              </View>
+              <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{color:'grey'}}>TopQuest</Text>
+                  <Text style={{fontWeight:'bold'}}>3 Tantangan</Text>
+              </View>
+              <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                  <Text style={{color:'grey'}}>Kupon Saya</Text>
+                  <Text style={{fontWeight:'bold'}}>11 Kupon</Text>
+              </View>
+            </View>
+            {/* menu dana */}
+            <View style={{flexDirection:'column',marginTop:12, width:'100%',alignSelf:'baseline',paddingBottom:12,borderColor:'grey', borderWidth:0.5, borderRadius:4}}>
+              <Text style={{fontWeight:'bold',fontSize:16,padding:12}}> Dana di Atur Toko</Text>
+              <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>
+                
+                <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text style={{color:'grey'}}>Aktivasi</Text>
+                    <Text style={{fontWeight:'bold'}}>OVO</Text>
+                </View>
+                <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text style={{fontWeight:'bold'}}>Rp.0</Text>
+                    <Text style={{color:'grey'}}>Saldo</Text>
+                </View>
+              </View>  
+            </View>
+            {/* menu Transaksi */}
+            <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+              <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Transaksi</Text>
+              <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Menunggu Pembayaran</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Semua transaksi yang belum dibayar</Text> 
+                </View>
                 <Icon name="chevron-right"  style={{width:20,height:20}}/>
+              </View>  
+            </View>   
+             {/* daftar transaksi */}
+            <View style={{flexDirection:'column',marginTop:4, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+              <Text style={{fontSize:16,padding:12}}> Daftar Transaksi</Text>
+              <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>  
+                <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text>Belanja</Text>
+                </View>
+                <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text>Top-up &{'\n'} Tagihan</Text>
+                </View>
+                <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text>Pesawat</Text>
+                </View>
+                <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
+                  <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
+                    <Text style={{justifyContent:'center'}}>Lihat{'\n'}Semua</Text>
+                </View>
+              </View>  
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Ulasan</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Berikan Penilaian dan ulasan Product</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Komplain Sebagai Pembeli</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat status komplain</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            {/* favorit saya */}
+            <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', paddingBottom:20}}>
+              <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Favorit Saya</Text>
+            </View>   
+            {/* isi menu favorit */}
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Topik Favorit</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur topik favorit saya</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Terakhir Dilihat</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Cek Produk terakhir yang dilihat</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Wishlist</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat Produk yang sudah Anda wishlist</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Toko Favorit</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat Toko yang sudah Anda favoritkan</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Langganan</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur & bayar tagihan dalam satu tempat</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+            </View> 
+            {/* Atur toko care */}
+            <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+              <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>AturToko Care</Text>
+              <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
+                <View style={{flexDirection:'column'}}>
+                  <Text style={{fontWeight:'normal',fontSize:18}}>Pusat bantuan</Text> 
+                  <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat solusi terbaik dari AturToko Care</Text> 
+                </View>
+                <Icon name="chevron-right"  style={{width:20,height:20}}/>
+              </View>  
+            </View>  
+  
+            <View style={styles.body}>
+              <View style={styles.bodyContent}>
+                
+                {/* <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
+                <TouchableOpacity style={styles.buttonContainer} onPress={()=> Alert.alert('Whoopss','On Development')}>
+                  <Text>Edit Profile</Text>  
+                </TouchableOpacity>               */}
+                <TouchableOpacity style={styles.buttonContainer} onPress={()=> {
+                  this.props.authSuccess('')
+                  this.props.navigation.replace('LoginScreen')
+                  }}>
+                  <Text>Logout</Text> 
+                </TouchableOpacity>
               </View>
-            </View>
           </View>
-          {/* menu profile */}
-          <View style={{flexDirection:'row',marginTop:12, width:'100%',alignSelf:'baseline',paddingVertical:20,borderColor:'grey', borderWidth:0.5, borderRadius:4, justifyContent:'space-around',alignItems:'center'}}>
-            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                <Text style={{color:'grey'}}>TokoMember</Text>
-                <Text style={{fontWeight:'bold'}}>0 Member</Text>
-            </View>
-            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                <Text style={{color:'grey'}}>TopQuest</Text>
-                <Text style={{fontWeight:'bold'}}>3 Tantangan</Text>
-            </View>
-            <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-              <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                <Text style={{color:'grey'}}>Kupon Saya</Text>
-                <Text style={{fontWeight:'bold'}}>11 Kupon</Text>
-            </View>
-          </View>
-          {/* menu dana */}
-          <View style={{flexDirection:'column',marginTop:12, width:'100%',alignSelf:'baseline',paddingBottom:12,borderColor:'grey', borderWidth:0.5, borderRadius:4}}>
-            <Text style={{fontWeight:'bold',fontSize:16,padding:12}}> Dana di Atur Toko</Text>
-            <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>
-              
-              <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text style={{color:'grey'}}>Aktivasi</Text>
-                  <Text style={{fontWeight:'bold'}}>OVO</Text>
-              </View>
-              <View style={{width:'50%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text style={{fontWeight:'bold'}}>Rp.0</Text>
-                  <Text style={{color:'grey'}}>Saldo</Text>
-              </View>
-            </View>  
-          </View>
-          {/* menu Transaksi */}
-          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
-            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Transaksi</Text>
-            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Menunggu Pembayaran</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Semua transaksi yang belum dibayar</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-            </View>  
-          </View>   
-           {/* daftar transaksi */}
-          <View style={{flexDirection:'column',marginTop:4, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
-            <Text style={{fontSize:16,padding:12}}> Daftar Transaksi</Text>
-            <View style={{flexDirection:'row',marginTop:12, width:'100%', justifyContent:'space-around',alignItems:'center'}}>  
-              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text>Belanja</Text>
-              </View>
-              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text>Top-up &{'\n'} Tagihan</Text>
-              </View>
-              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text>Pesawat</Text>
-              </View>
-              <View style={{width:'25%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
-                <Image style={{width:40,height:40}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />} />
-                  <Text style={{justifyContent:'center'}}>Lihat{'\n'}Semua</Text>
-              </View>
-            </View>  
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Ulasan</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Berikan Penilaian dan ulasan Product</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Komplain Sebagai Pembeli</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat status komplain</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          {/* favorit saya */}
-          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', paddingBottom:20}}>
-            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>Favorit Saya</Text>
-          </View>   
-          {/* isi menu favorit */}
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Topik Favorit</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur topik favorit saya</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Terakhir Dilihat</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Cek Produk terakhir yang dilihat</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Wishlist</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>lihat Produk yang sudah Anda wishlist</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Toko Favorit</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat Toko yang sudah Anda favoritkan</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between', borderBottomWidth:0.5,padding:12, paddingBottom:20}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Langganan</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Atur & bayar tagihan dalam satu tempat</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-          </View> 
-          {/* Atur toko care */}
-          <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
-            <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>AturToko Care</Text>
-            <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
-              <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:'normal',fontSize:18}}>Pusat bantuan</Text> 
-                <Text style={{fontWeight:'300',fontSize:18,color:'grey'}}>Lihat solusi terbaik dari AturToko Care</Text> 
-              </View>
-              <Icon name="chevron-right"  style={{width:20,height:20}}/>
-            </View>  
-          </View>  
-
-          <View style={styles.body}>
-            {/* <View style={styles.bodyContent}>
-              
-              <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-              <TouchableOpacity style={styles.buttonContainer} onPress={()=> Alert.alert('Whoopss','On Development')}>
-                <Text>Edit Profile</Text>  
-              </TouchableOpacity>              
-              <TouchableOpacity style={styles.buttonContainer} onPress={()=> {
-                this.props.authSuccess('')
-                this.props.navigation.replace('LoginScreen')
-                }}>
-                <Text>Logout</Text> 
-              </TouchableOpacity>
-            </View> */}
         </View>
-      </View>
-      </ScrollView>
-    )
+        </ScrollView>
+      )
+    }else{
+      return (
+        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
+          <Text>Please Login First</Text>
+        </View>
+      )
+    }
+    
   }
 
   updateSearch = (search) => {
@@ -574,28 +706,28 @@ class DashboardScreen extends Component {
     return (
       <View style={[{flex:1,height:'100%',backgroundColor:'#F5F5F5'}]}>
         {
-          selectedMenu ==='EXPLORE' ?
-          <SearchBar
-          placeholder="coba cari disini ....."
-          onChangeText={this.updateSearch}
-          value={search}
-          leftIcon={Images.logo}
-          lightTheme
-          round
-          placeholderTextColor={'#add8e6'}
-          containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5}}
-          showLoading={true}
-          style={{backgroundColor:"white"}}
-          inputStyle={{backgroundColor: '#add8e6'}}
-          inputContainerStyle={{backgroundColor: '#add8e6'}}
-        />:
-          selectedMenu==='PROFILE'?
-          <Header
-          placement="left"
-          centerComponent={{ text: selectedMenu, style: { color: '#fff' } }}
-          backgroundColor={'#add8e6'}
-        />
-          :
+        //   selectedMenu ==='EXPLORE' ?
+        //   <SearchBar
+        //   placeholder="coba cari disini ....."
+        //   onChangeText={this.updateSearch}
+        //   value={search}
+        //   leftIcon={Images.logo}
+        //   lightTheme
+        //   round
+        //   placeholderTextColor={'#add8e6'}
+        //   containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5}}
+        //   showLoading={true}
+        //   style={{backgroundColor:"white"}}
+        //   inputStyle={{backgroundColor: '#add8e6'}}
+        //   inputContainerStyle={{backgroundColor: '#add8e6'}}
+        // />:
+        //   selectedMenu==='PROFILE'?
+        //   <Header
+        //   placement="left"
+        //   centerComponent={{ text: selectedMenu, style: { color: '#fff' } }}
+        //   backgroundColor={'#add8e6'}
+        // />
+        //   :
           <Header
           leftComponent={<TouchableOpacity onPress={()=>this.toggleOverlay()}><Icon name="menu" color="#2D4070" ></Icon></TouchableOpacity>}
           centerComponent={<Image source={Images.logo} style={{width:Dimensions.get('screen').width*0.3,height:Dimensions.get('screen').height*0.05}}/>}
@@ -627,7 +759,7 @@ class DashboardScreen extends Component {
          }
          {
              selectedMenu === 'PRODUCT' ?
-             this.Product():null
+             this.Product(search):null
          }
          {
           selectedMenu === 'ORDER' ?
@@ -772,12 +904,13 @@ const mapStateToProps = (state) => {
     fetchingProfile:state.profile.fetching,
     payloadProfile:state.profile.payload,
     errorProfile:state.profile.error,
-    auth:state.auth.payload
+    auth:state.auth.payload,
+    product:state.product.payload,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(Object.assign(AuthActions,ProfileActions) , dispatch)
+  return bindActionCreators(Object.assign(AuthActions,ProfileActions,ProductActions) , dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen)

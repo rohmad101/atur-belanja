@@ -10,6 +10,7 @@ import { GithubTypes } from '../Redux/GithubRedux'
 import { LoginTypes } from '../Redux/LoginRedux'
 import { RegisterTypes } from '../Redux/RegisterRedux'
 import { ProfileTypes } from '../Redux/ProfileRedux';
+import { ProductTypes } from '../Redux/ProductRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -18,6 +19,7 @@ import { getUserAvatar } from './GithubSagas'
 import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
 import { getProfile } from './ProfileSagas';
+import { getProduct } from './ProductSagas';
 
 /* ------------- API ------------- */
 
@@ -36,6 +38,7 @@ export default function * root () {
     // takeLatest(GithubTypes.USER_REQUEST, getUserAvatar, api),
     takeLatest(LoginTypes.LOGIN_REQUEST, getLogin, api),
     takeLatest(RegisterTypes.REGISTER_REQUEST,getRegister,api),
-    takeLatest(ProfileTypes.PROFILE_REQUEST,getProfile,api)
+    takeLatest(ProfileTypes.PROFILE_REQUEST,getProfile,api),
+    takeLatest(ProductTypes.PRODUCT_REQUEST,getProduct,api)
   ])
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { TouchableOpacity, Text, Image, Alert } from 'react-native'
 import { View } from 'react-native-animatable'
 import { connect } from 'react-redux'
+import reactotron from 'reactotron-react-native'
 import { Images } from '../Themes'
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 // import YourActions from '../Redux/YourRedux'
@@ -97,8 +98,8 @@ class OnBoardingScreen extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const {auth} = state
-  const {payload} = auth
+  const {payload} = state.auth
+  reactotron.log('payload',payload)
   return {
     status: payload?true:false
   }

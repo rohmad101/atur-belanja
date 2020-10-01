@@ -39,6 +39,9 @@ const images = {
   menu_info_process: require('../Images/menu_info_process.png'),
   menu_info_order: require('../Images/menu_info_order.png'),
   expands_dashboard: require('../Images/expands_dashboard.png'),
+  more: require('../Images/Icons/more.png'),
+  add: require('../Images/Icons/Add.png'),
+  filter: require('../Images/Icons/filter.png'),
   
 
 }
