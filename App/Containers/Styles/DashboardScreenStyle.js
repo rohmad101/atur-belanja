@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { PixelRatio, StyleSheet } from 'react-native'
 import { ApplicationStyles } from '../../Themes/'
 
 export default StyleSheet.create({
@@ -74,5 +74,16 @@ export default StyleSheet.create({
     borderRadius:20,
     marginLeft:18
   },
-  textMenuSidebar:{color:'white',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'}
+  textMenuSidebar:{color:'white',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'},
+  avatarContainer: {
+    borderColor: '#9B9B9B',
+    borderWidth: 1 / PixelRatio.get(),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatar: {
+    borderRadius: 75,
+    width: 150,
+    height: 150,
+  },
 })

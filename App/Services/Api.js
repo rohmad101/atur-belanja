@@ -44,6 +44,11 @@ const create = (baseURL = URL) => {
   const getprofile =(payload)=> api.get('/mt/userdetail',{}, { headers: { Authorization: payload } })
   const getAuth =(payload)=> api.post('/mt/validation',{ "authorization_code": payload })
   const getproduct =(payload)=> api.post('/mt/list',{}, { headers: { Authorization: payload }})
+  const getaddcart = (payload)=> api.post('/mt/addtocart',payload.body,{ headers: { Authorization: payload.auth } })
+  const getcart = (payload)=>api.get('/mt/getcart',{}, { headers: { Authorization: payload } })
+  const getupdatecart = (payload)=> api.post('/mt/updatecart',payload.body,{ headers: { Authorization: payload.auth } })
+  const getdeletecart = (payload)=> api.post('/mt/deletefromcart',payload.body,{ headers: { Authorization: payload.auth } })
+  const clearCart  =(payload)=>api.post('/mt/clearcart',{}, { headers: { Authorization: payload }})
   // ------
   // STEP 3
   // ------
@@ -65,7 +70,12 @@ const create = (baseURL = URL) => {
     getregister,
     getprofile,
     getAuth,
-    getproduct
+    getproduct,
+    getaddcart,
+    getcart,
+    getupdatecart,
+    getdeletecart,
+    clearCart
   }
 }
 

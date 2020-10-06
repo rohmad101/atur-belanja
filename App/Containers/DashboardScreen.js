@@ -7,25 +7,36 @@ import SliderEntry from './components/SliderEntry';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { Images } from '../Themes'
 import { SearchBar,Header,Icon,Image,Card,ListItem,Button,Overlay, Divider } from 'react-native-elements';
-// Add Actions - replace 'Your' with whatever your reducer is called :)
-import AuthActions from '../Redux/AuthRedux'
-import ProfileActions from '../Redux/ProfileRedux'
-import ProductActions from '../Redux/ProductRedux'
-
-// Styles
-import styles from './Styles/DashboardScreenStyle'
+import ImagePicker from 'react-native-image-picker';
 import { bindActionCreators } from 'redux'
 import { BarChart, StackedBarChart } from 'react-native-chart-kit';
 import reactotron from 'reactotron-react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import Video from 'react-native-video';
+// Add Actions - replace 'Your' with whatever your reducer is called :)
+import AuthActions from '../Redux/AuthRedux'
+import LoginActions from '../Redux/LoginRedux'
+import ProfileActions from '../Redux/ProfileRedux'
+import ProductActions from '../Redux/ProductRedux'
+import CartRedux from '../Redux/CartRedux'
+import ListCartRedux from '../Redux/ListCartRedux'
+import UpdateCartRedux from '../Redux/UpdateCartRedux'
+import DeleteCartRedux from '../Redux/DeleteCartRedux'
+import ClearCartRedux from '../Redux/ClearCartRedux'
+// Styles
+import styles from './Styles/DashboardScreenStyle'
 
 class DashboardScreen extends Component {
   state={
-    selectedMenu:'DASHBOARD',
+    selectedMenu:'PRODUCT',
     search:'',
     visible:false,
     slider1ActiveSlide:0,
     expandsDashboard:false,
+    statusAddProduct:false,
+    avatarSource: null,
+    videoSource: null,
+    order:[],
     suggestion:[ 
       {
         title: 'Beautiful and dramatic Antelope Canyon',
@@ -61,41 +72,37 @@ class DashboardScreen extends Component {
   }
 
   componentDidMount(){
-    // const { dataProfile,fetchingProfile,payloadProfile,navigation,productRequest,auth }= this.props
-    // productRequest(auth.data.access_token)
+    const {profileRequest,productRequest,auth }= this.props
+    productRequest(auth.data.access_token)
+    // profileRequest(auth.data.access_token)
  
   }
   componentDidUpdate(prevProps, prevState, snapshot){
-    const { dataProfile,fetchingProfile,payloadProfile,errorProfile,productRequest,profileRequest,auth }= this.props
-    if(this.state.selectedMenu === 'SETTINGS') {
-      if(prevState.selectedMenu !== this.state.selectedMenu){
-        if(payloadProfile === null){
-          if(!fetchingProfile) {
-            // alert(JSON.stringify(auth.payload.data.authorization_code))
-            reactotron.log('auth',auth)
-            profileRequest(auth.data.access_token)
-          }
-        }else{
-          // alert('data profile',JSON.stringify(payloadProfile))
-        }
-      }  
-    }
-    if(this.state.selectedMenu === 'PRODUCT') {
-      if(prevState.selectedMenu !== this.state.selectedMenu){
-        if(payloadProfile === null){
-          if(!fetchingProfile) {
-            // alert(JSON.stringify(auth.payload.data.authorization_code))
-            reactotron.log('auth',auth)
-            productRequest(auth.data.access_token)
-          }
-        }else{
-          // alert('data profile',JSON.stringify(payloadProfile))
-        }
-      }  
-    }
+    const { listCartRequest,productRequest,profileRequest,auth,navigation }= this.props
+   
     if(auth){
+      if(prevState.selectedMenu !== this.state.selectedMenu){
+        if(this.state.selectedMenu === 'SETTINGS') {
+              // alert(JSON.stringify(auth.payload.data.authorization_code))
+              // reactotron.log('auth',auth)
+              profileRequest(auth.data.access_token)
+      }
+       if(this.state.selectedMenu === 'PRODUCT') {
+              // alert(JSON.stringify(auth.payload.data.authorization_code))
+              // reactotron.log('auth',auth)
+              productRequest(auth.data.access_token)  
+       } 
+        if(this.state.selectedMenu === 'REPORT') {
+              // alert(JSON.stringify(auth.payload.data.authorization_code))
+              // reactotron.log('auth',auth)
+              listCartRequest(auth.data.access_token)  
+       } 
+    }
+    if(prevState.selectedMenu !== this.state.selectedMenu){
+      
+      }
     }else{
-      navigation.reset('LoginScreen')
+      navigation.replace('LoginScreen')
     }
   }
 
@@ -150,7 +157,7 @@ class DashboardScreen extends Component {
   //     </View>
   //   )
   // }
-  Dashboard =()=>{
+  Dashboard =(visible)=>{
     const data = {
       labels: [1,2,3,4,5,6,7,8,9],
       legend: [],
@@ -179,7 +186,7 @@ class DashboardScreen extends Component {
     };
     return(
       <ScrollView>
-        <View style={{flex:1}}>
+        <View style={{flex:1,marginLeft:visible?'50%':0}}>
           <View style={{backgroundColor:'#2D4070',width:"100%",alignItems:'center'}}>
             {/* intro */}
             <View style={{width:"100%", height:Dimensions.get('screen').height*0.15, backgroundColor:'#50E348', borderBottomLeftRadius:12,borderBottomRightRadius:12,padding:12}}>
@@ -385,6 +392,7 @@ class DashboardScreen extends Component {
       
     )
   }
+  // fungsi untuk product
   filterList(list) {
     return list.filter(
       (listItem) =>
@@ -394,32 +402,130 @@ class DashboardScreen extends Component {
         listItem.sku_id.toLowerCase().includes(this.state.search.toLowerCase()),
     );
   }
-  Product =(search)=>{
+  selectPhotoTapped() {
+    const options = {
+      quality: 1.0,
+      maxWidth: 500,
+      maxHeight: 500,
+      storageOptions: {
+        skipBackup: true,
+      },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled photo picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        let source = {uri: response.uri};
+
+        // You can also display the image using data:
+        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: source,
+        });
+      }
+    });
+  }
+  selectVideoTapped() {
+    const options = {
+      title: 'Video Picker',
+      takePhotoButtonTitle: 'Take Video...',
+      mediaType: 'video',
+      videoQuality: 'medium',
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled video picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        this.setState({
+          videoSource: response.uri,
+        });
+      }
+    });
+  }
+// ui product
+  Product =(search,visible,statusAddProduct)=>{
     const {product}=this.props
+    const {width,height}=Dimensions.get('screen')
     const list = [
       {artist: 'The Weeknd', song: 'Blinding Lights'},
       {artist: 'Drake', song: 'Toosie Slide'},
       {artist: 'Roddy Ricch', song: 'The Box'},
       {artist: 'Dua Lipa', song: 'Dont Start Now'},
     ];
+    const qty=[]
+    // if(statusAddProduct){
+    //   const options = {
+    //     title: 'Select Avatar',
+    //     customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+    //     storageOptions: {
+    //       skipBackup: true,
+    //       path: 'images',
+    //     },
+    //   };
+    //   return (
+    //   <ScrollView>
+    //     <View style={{width:width,height:height,alignItems:'center'}}>
+    //     <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
+    //       <View
+    //          style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
+    //           {this.state.avatarSource === null ? (
+    //             <Text>Select a Photo</Text>
+    //           ) : (
+    //             <Image style={styles.avatar} source={this.state.avatarSource} />
+    //           )}
+    //         </View>
+    //       </TouchableOpacity>
+
+    //       <TouchableOpacity onPress={this.selectVideoTapped.bind(this)}>
+            
+    //         <View style={[styles.avatar, styles.avatarContainer]}>
+    //           <Text>Select a Video</Text>
+    //         </View>
+    //       </TouchableOpacity>
+          
+    //        {this.state.videoSource && (
+    //         <Video source={this.state.videoSource}   // Can be a URL or a local file.
+    //         ref={(ref) => {
+    //           this.player = ref
+    //         }}                                      // Store reference
+    //         onBuffer={this.onBuffer}                // Callback when remote video is buffering
+    //         onError={this.videoError}               // Callback when video cannot be loaded
+    //         style={styles.backgroundVideo}
+    //         controls={true}
+    //         fullscreen={true}
+    //         style={styles.uploadImage} />
+    //       )}
+    //       {this.state.videoSource && (
+    //         <Text style={{margin: 8, textAlign: 'center'}}>
+    //           {this.state.videoSource}
+    //         </Text>
+    //       )}
+    //       <Divider style={{width:'95%', height:2, backgroundColor:'#CBE3D4'}}/>
+    //       <TouchableOpacity onPress={()=>this.setState({statusAddProduct: !statusAddProduct})} style={{borderRadius:4,width:width*0.8, height:height*0.05,backgroundColor:'#2D4070',justifyContent:'center',alignItems:'center'}}>
+    //         <Text style={{color:'white'}}>Save</Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   </ScrollView>
+    //   )
+    // }
     return(
       <ScrollView>
-        {/* <SearchBar
-          placeholder="coba cari disini ....."
-          onChangeText={this.updateSearch}
-          value={search}
-          leftIcon={Images.logo}
-          lightTheme
-          round
-          // placeholderTextColor={'#add8e6'}
-          containerStyle={{backgroundColor: '#5BE553', borderWidth: 1, borderRadius: 5}}
-          showLoading={true}
-          style={{backgroundColor:"white", borderRadius:8}}
-          inputStyle={{fontStyle:'italic'}}
-          inputContainerStyle={{backgroundColor: '#5BE553'}}
-          InputComponent
-        /> */}
-      <View style={{alignItems: 'center',height: Dimensions.get('screen').height}}>
+      <View style={{alignItems: 'center',height: Dimensions.get('screen').height,marginLeft:visible?'50%':0}}>
         <View style={{width:'100%', backgroundColor:'#5BE553',height:'10%',minHeight:80, justifyContent:'center',alignItems:'center'}}>
           <TextInput
             value={search}
@@ -432,7 +538,7 @@ class DashboardScreen extends Component {
           />
         </View>
         <View style={{width:'100%', backgroundColor:'#2D4070',height:'10%',minHeight:80, justifyContent:'space-around',alignItems:'center',flexDirection:'row'}}>
-         <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>Alert.alert('on development',' this feature still on development')}>
+         <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>this.setState({statusAddProduct: !statusAddProduct})}>
           <Image source={Images.add} style={{width:30,height:30}}/>
           <Text style={{color:'white', fontSize:14}}>Add</Text>
          </TouchableOpacity>
@@ -465,10 +571,29 @@ class DashboardScreen extends Component {
                  </View>
               </View>
             </View>
-            <View style={{flexDirection:'row',width:'100%',justifyContent:'space-between'}}>
-              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Archive</Text>
-              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Edit</Text>
-              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Other</Text>
+            <View style={{flexDirection:'row',width:'100%',justifyContent:'flex-end'}}>
+              {/* <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Archive</Text>
+              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Edit</Text> */}
+              <TextInput
+              value={qty[index]}
+              placeholder={'input qty'}
+              placeholderTextColor={'#fff'}
+              style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:6,borderRadius:8,marginRight:12,width:'30%',textAlign:'center'}}
+              onChangeText={jumlah => qty[index]=jumlah}
+              />
+              <Text onPress={()=>{
+              this.props.cartRequest({
+                auth:this.props.auth.data.access_token, 
+                body:{
+                "product_id": listItem.id,
+                "notes": "yang rapih ya",
+                "quantity": qty[index]
+                }
+              })
+            
+            }
+              
+              } style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:10,borderRadius:8,width:'30%',textAlign:'center'}}>Add to Cart</Text>
             </View>
          </View>
         )):null}
@@ -476,55 +601,124 @@ class DashboardScreen extends Component {
       </ScrollView>
     )
   }
-  Order =()=>{
+  Order =(visible)=>{
     return(
-      <View>
+      <View style={{marginLeft:visible?'50%':0}}>
         <Text>Order</Text>
       </View>
     )
   }
-  Payment =()=>{
+  Payment =(visible)=>{
     return(
-      <View>
+      <View style={{marginLeft:visible?'50%':0}}>
         <Text>Investment</Text>
       </View>
     )
   }
-  Report =()=>{
+  Report =(visible)=>{
+    const {cart} = this.props
+   
+    const qty=[]
+
+    if(cart && cart.data && cart.data.items &&cart.data.items.length){
+      cart.data.items.map((data,index)=>{
+        qty[index]=data.qty
+      })
+    }
+    // reactotron.log(cart)
     return(
-      <View>
-        <Text>Report</Text>
+      <ScrollView style={{height: Dimensions.get('screen').height*0.85}}>
+      <View style={{alignItems: 'center',marginLeft:visible?'50%':0}}>
+        <View style={{width:'100%', justifyContent:'flex-end', alignItems:'center',flexDirection:'row'}}>
+        <Text onPress={()=>{
+              this.props.clearCartRequest(this.props.auth.data.access_token)
+              this.props.listCartRequest(this.props.auth.data.access_token) 
+            }
+              } style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:10,borderRadius:8,width:'30%',textAlign:'center'}}>Clear Cart</Text>
+        </View>
+        { cart && cart.data && cart.data.items &&cart.data.items.length>0 ?
+          cart.data.items.map((listItem, index) => (
+           <View style={{alignItems: 'center',padding: 24, width: '90%',flexDirection:'column'}}>
+             <View style={{flexDirection:'row',width:'100%'}}>
+               <Image source={{uri:listItem.product_image}} style={{width:80,height:100}}/>
+               <View style={{flexDirection:'column',width:'100%', paddingLeft:12}}>
+                 <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}>{listItem.name}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Rp {listItem.price}</Text>
+                 <View style={{flexDirection:'row',width:'70%',justifyContent:'space-between'}}>
+                  <Text style={{color:'#2D4070'}}>Qty: {listItem.qty}</Text>
+                  <Text style={{color: 'white',fontSize: 12,backgroundColor:'#6A8E78',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>Total: {listItem.price}</Text>
+                  {/* <Text style={{color: 'black',fontSize: 12,backgroundColor:'#E3CA43',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>OwnStock</Text> */}
+                 </View>
+              </View>
+            </View>
+            <View style={{flexDirection:'row',width:'100%',justifyContent:'flex-end'}}>
+              {/* <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Archive</Text>
+              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Edit</Text> */}
+              <Text onPress={()=>{
+                this.props.deleteCartRequest({
+                  auth:this.props.auth.data.access_token, 
+                  body:{
+                    "product_id" : listItem.product_id
+                  }
+                })
+                this.props.listCartRequest(this.props.auth.data.access_token) 
+              }
+              } 
+                style={{color: 'white',fontSize: 16,backgroundColor:'red',paddingTop:10,borderRadius:8,width:'30%',textAlign:'center',marginRight:12}}>Delete</Text>
+              <TextInput
+              value={qty[index]}
+              placeholder={'input qty'}
+              placeholderTextColor={'#fff'}
+              style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:6,borderRadius:8,marginRight:12,width:'30%',textAlign:'center'}}
+              onChangeText={jumlah => qty[index]=jumlah}
+              />
+               <Text onPress={()=>{
+              this.props.updateCartRequest({
+                auth:this.props.auth.data.access_token, 
+                body:{
+                "product_id": listItem.product_id,
+                "notes": "yang rapih ya",
+                "quantity": qty[index]
+                }
+              })
+              this.props.listCartRequest(this.props.auth.data.access_token) 
+            }
+              } style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:10,borderRadius:8,width:'30%',textAlign:'center'}}>Update</Text>
+            </View>
+         </View>
+        )):null}
       </View>
+      </ScrollView>
     )
   }
-  Analyzer =()=>{
+  Analyzer =(visible)=>{
     return(
-      <View>
+      <View style={{marginLeft:visible?'50%':0}}>
         <Text>Analyzer</Text>
       </View>
     )
   }
-  Addons =()=>{
+  Addons =(visible)=>{
     return(
-      <View>
+      <View style={{marginLeft:visible?'50%':0}}>
         <Text>Addons</Text>
       </View>
     )
   }
-  Mutasi =()=>{
+  Mutasi =(visible)=>{
     return(
-      <View>
+      <View style={{marginLeft:visible?'50%':0}}>
         <Text>Mutasi</Text>
       </View>
     )
   }
-  Settings =()=>{
+  Settings =(visible)=>{
     const {payloadProfile} = this.props
     if(payloadProfile && payloadProfile.data) {
       const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
       return(
         <ScrollView>
-        <View style={{flex:1,margin:12,paddingVertical:12}}>
+        <View style={{flex:1,margin:12,paddingVertical:12,marginLeft:visible?'50%':0}}>
             <View style={{width:'100%', flexDirection:'row'}}>
               <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
               <View style={{justifyContent:'center'}}>
@@ -678,7 +872,8 @@ class DashboardScreen extends Component {
                   <Text>Edit Profile</Text>  
                 </TouchableOpacity>               */}
                 <TouchableOpacity style={styles.buttonContainer} onPress={()=> {
-                  this.props.authSuccess('')
+                  this.props.authSuccess(null)
+                  this.props.loginSuccess(null)
                   this.props.navigation.replace('LoginScreen')
                   }}>
                   <Text>Logout</Text> 
@@ -690,8 +885,8 @@ class DashboardScreen extends Component {
       )
     }else{
       return (
-        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
-          <Text>Please Login First</Text>
+        <View style={{width:Dimensions.get('screen').width,height:Dimensions.get('screen').height,justifyContent:'center',alignItems:'center'}}>
+          <ActivityIndicator size="large" color="#00ff00"/>
         </View>
       )
     }
@@ -702,7 +897,7 @@ class DashboardScreen extends Component {
     this.setState({ search });
   };
   render () {
-    const { selectedMenu,search,visible } = this.state
+    const { selectedMenu,search,visible,statusAddProduct } = this.state
     return (
       <View style={[{flex:1,height:'100%',backgroundColor:'#F5F5F5'}]}>
         {
@@ -748,48 +943,49 @@ class DashboardScreen extends Component {
           </View>
           }
           backgroundColor={'#fff'}
-          containerStyle={{marginTop:0}}
+          containerStyle={{marginTop:0,marginLeft:visible?'50%':0}}
         /> 
         }
       
         <KeyboardAvoidingView>
          {
            selectedMenu ==='DASHBOARD'?
-            this.Dashboard():null
+            this.Dashboard(visible):null
          }
          {
              selectedMenu === 'PRODUCT' ?
-             this.Product(search):null
+             
+             this.Product(search,visible,statusAddProduct):null
          }
          {
           selectedMenu === 'ORDER' ?
-          this.Order():null
+          this.Order(visible):null
          }
          {
           selectedMenu==='PAYMENT' ?
-          this.Payment():null
+          this.Payment(visible):null
          }
          {
 
           selectedMenu==='REPORT' ?
-          this.Report():null
+          this.Report(visible):null
          }
          {
           selectedMenu==='ANALYZER' ?
-          this.Analyzer():null
+          this.Analyzer(visible):null
          }
          {
 
           selectedMenu==='ADDONS'?
-          this.Addons():null
+          this.Addons(visible):null
          }
          {
           selectedMenu==='MUTASI' ?
-          this.Mutasi():null
+          this.Mutasi(visible):null
          }
          {
           selectedMenu === 'SETTINGS'?
-          this.Settings():
+          this.Settings(visible):
           null
          }
         </KeyboardAvoidingView>
@@ -899,6 +1095,7 @@ class DashboardScreen extends Component {
 }
 
 const mapStateToProps = (state) => {
+  reactotron.log(state)
   return {
     dataProfile:state.profile.data,
     fetchingProfile:state.profile.fetching,
@@ -906,11 +1103,12 @@ const mapStateToProps = (state) => {
     errorProfile:state.profile.error,
     auth:state.auth.payload,
     product:state.product.payload,
+    cart: state.cart.payload
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(Object.assign(AuthActions,ProfileActions,ProductActions) , dispatch)
+  return bindActionCreators(Object.assign(AuthActions,ProfileActions,ProductActions,LoginActions,CartRedux,ListCartRedux,UpdateCartRedux,DeleteCartRedux,ClearCartRedux) , dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen)

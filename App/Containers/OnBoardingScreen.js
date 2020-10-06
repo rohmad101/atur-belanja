@@ -99,7 +99,7 @@ class OnBoardingScreen extends Component {
 
 const mapStateToProps = (state) => {
   const {payload} = state.auth
-  reactotron.log('payload',payload)
+  // reactotron.log('payload',payload)
   return {
     status: payload?true:false
   }

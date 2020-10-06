@@ -11,6 +11,11 @@ import { LoginTypes } from '../Redux/LoginRedux'
 import { RegisterTypes } from '../Redux/RegisterRedux'
 import { ProfileTypes } from '../Redux/ProfileRedux';
 import { ProductTypes } from '../Redux/ProductRedux';
+import { CartTypes } from '../Redux/CartRedux';
+import { ListCartTypes } from '../Redux/ListCartRedux';
+import { UpdateCartTypes } from '../Redux/UpdateCartRedux';
+import { DeleteCartTypes } from '../Redux/DeleteCartRedux';
+import { ClearCartTypes } from '../Redux/ClearCartRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -19,7 +24,7 @@ import { getUserAvatar } from './GithubSagas'
 import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
 import { getProfile } from './ProfileSagas';
-import { getProduct } from './ProductSagas';
+import { getProduct, getCart,getAddCart,getUpdateCart,getDeleteCart,getClearCart } from './ProductSagas';
 
 /* ------------- API ------------- */
 
@@ -39,6 +44,11 @@ export default function * root () {
     takeLatest(LoginTypes.LOGIN_REQUEST, getLogin, api),
     takeLatest(RegisterTypes.REGISTER_REQUEST,getRegister,api),
     takeLatest(ProfileTypes.PROFILE_REQUEST,getProfile,api),
-    takeLatest(ProductTypes.PRODUCT_REQUEST,getProduct,api)
+    takeLatest(ProductTypes.PRODUCT_REQUEST,getProduct,api),
+    takeLatest(CartTypes.CART_REQUEST, getAddCart,api),
+    takeLatest(ListCartTypes.LIST_CART_REQUEST, getCart,api),
+    takeLatest(UpdateCartTypes.UPDATE_CART_REQUEST, getUpdateCart,api),
+    takeLatest(DeleteCartTypes.DELETE_CART_REQUEST, getDeleteCart,api),
+    takeLatest(ClearCartTypes.CLEAR_CART_REQUEST, getClearCart,api),
   ])
 }

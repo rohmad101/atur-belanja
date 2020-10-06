@@ -13,7 +13,12 @@ export const reducers = combineReducers({
   auth: require('./AuthRedux').reducer,
   register: require('./RegisterRedux').reducer,
   profile: require('./ProfileRedux').reducer,
-  product: require('./ProductRedux').reducer
+  product: require('./ProductRedux').reducer,
+  addcart: require('./CartRedux').reducer,
+  cart: require('./ListCartRedux').reducer,
+  deleteCart: require('./DeleteCartRedux').reducer,
+  updateCart: require('./UpdateCartRedux').reducer,
+  clearCart: require('./ClearCartRedux').reducer
 })
 
 export default () => {
