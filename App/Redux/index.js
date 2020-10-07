@@ -18,7 +18,10 @@ export const reducers = combineReducers({
   cart: require('./ListCartRedux').reducer,
   deleteCart: require('./DeleteCartRedux').reducer,
   updateCart: require('./UpdateCartRedux').reducer,
-  clearCart: require('./ClearCartRedux').reducer
+  clearCart: require('./ClearCartRedux').reducer,
+  listAddress:require('./AddressRedux').reducer,
+  listPayment: require('./PaymentRedux').reducer,
+  listLogistic:require('./LogisticRedux').reducer,
 })
 
 export default () => {

@@ -16,6 +16,10 @@ import { ListCartTypes } from '../Redux/ListCartRedux';
 import { UpdateCartTypes } from '../Redux/UpdateCartRedux';
 import { DeleteCartTypes } from '../Redux/DeleteCartRedux';
 import { ClearCartTypes } from '../Redux/ClearCartRedux';
+import { CreateOrderTypes } from '../Redux/CreateOrderRedux';
+import { AddressTypes } from '../Redux/AddressRedux';
+import { PaymentTypes } from '../Redux/PaymentRedux';
+import { LogisticTypes } from '../Redux/LogisticRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -25,6 +29,7 @@ import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
 import { getProfile } from './ProfileSagas';
 import { getProduct, getCart,getAddCart,getUpdateCart,getDeleteCart,getClearCart } from './ProductSagas';
+import { getCreateOrder, getAddress,getPayment,getLogistic } from './CreateOrderSagas';
 
 /* ------------- API ------------- */
 
@@ -50,5 +55,9 @@ export default function * root () {
     takeLatest(UpdateCartTypes.UPDATE_CART_REQUEST, getUpdateCart,api),
     takeLatest(DeleteCartTypes.DELETE_CART_REQUEST, getDeleteCart,api),
     takeLatest(ClearCartTypes.CLEAR_CART_REQUEST, getClearCart,api),
+    takeLatest(CreateOrderTypes.CREATE_ORDER_REQUEST, getCreateOrder,api),
+    takeLatest(AddressTypes.ADDRESS_REQUEST, getAddress,api),
+    takeLatest(PaymentTypes.PAYMENT_REQUEST, getPayment,api),
+    takeLatest(LogisticTypes.LOGISTIC_REQUEST, getLogistic,api),
   ])
 }

@@ -18,6 +18,7 @@ import UpdateCartRedux from '../Redux/UpdateCartRedux'
 import DeleteCartRedux from '../Redux/DeleteCartRedux'
 import ClearCartRedux from '../Redux/ClearCartRedux'
 import reactotron from 'reactotron-react-native'
+import { NavigationActions, StackActions } from 'react-navigation'
 // import { ProductSelectors } from '../Redux/ProductRedux'
 
 export function * getProduct (api, action) {
@@ -26,14 +27,18 @@ export function * getProduct (api, action) {
   // const currentData = yield select(ProductSelectors.getData)
   // make the call to the api
   const response = yield call(api.getproduct, data)
-
   // success?
   if (response.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
     yield put(ProductActions.productSuccess(response.data))
   } else {
-    yield put(ProductActions.productFailure())
+    if(response.status === 400||response.status === '400'){
+      // alert(response.status)
+      yield put(ProductActions.productSuccess(response))
+    }else { 
+      yield put(ProductActions.productFailure(response))
+    }
   }
 }
 

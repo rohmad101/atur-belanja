@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { ScrollView, Text, KeyboardAvoidingView, TouchableOpacity, Alert, ActivityIndicator, Dimensions } from 'react-native'
+import {Picker} from '@react-native-community/picker';
 import { View } from 'react-native-animatable'
 import { connect } from 'react-redux'
 import { sliderWidth, itemWidth } from './Styles/SliderEntery.styles';
@@ -23,6 +24,10 @@ import ListCartRedux from '../Redux/ListCartRedux'
 import UpdateCartRedux from '../Redux/UpdateCartRedux'
 import DeleteCartRedux from '../Redux/DeleteCartRedux'
 import ClearCartRedux from '../Redux/ClearCartRedux'
+import CreateOrderRedux from '../Redux/CreateOrderRedux'
+import AddressRedux from '../Redux/AddressRedux'
+import PaymentRedux from '../Redux/PaymentRedux'
+import LogisticRedux from '../Redux/LogisticRedux'
 // Styles
 import styles from './Styles/DashboardScreenStyle'
 
@@ -37,6 +42,8 @@ class DashboardScreen extends Component {
     avatarSource: null,
     videoSource: null,
     order:[],
+    Pengiriman:'',
+    Alamat:'',
     suggestion:[ 
       {
         title: 'Beautiful and dramatic Antelope Canyon',
@@ -78,8 +85,13 @@ class DashboardScreen extends Component {
  
   }
   componentDidUpdate(prevProps, prevState, snapshot){
-    const { listCartRequest,productRequest,profileRequest,auth,navigation }= this.props
-   
+    const { listCartRequest,productRequest,profileRequest,auth,navigation,paymentRequest,addressRequest,logisticRequest,product }= this.props
+    // reactotron.log(product)
+    if(product&&product.status===400||product&&product.status==='400'){
+      this.props.authSuccess(null)
+      this.props.loginSuccess(null)
+      navigation.replace('LoginScreen')
+    }
     if(auth){
       if(prevState.selectedMenu !== this.state.selectedMenu){
         if(this.state.selectedMenu === 'SETTINGS') {
@@ -97,11 +109,19 @@ class DashboardScreen extends Component {
               // reactotron.log('auth',auth)
               listCartRequest(auth.data.access_token)  
        } 
+       if(this.state.selectedMenu === 'ORDER') {
+        // alert(JSON.stringify(auth.payload.data.authorization_code))
+        // reactotron.log('auth',auth)
+        logisticRequest(auth.data.access_token)  
+        addressRequest(auth.data.access_token)  
+ } 
     }
     if(prevState.selectedMenu !== this.state.selectedMenu){
       
       }
     }else{
+      this.props.authSuccess(null)
+      this.props.loginSuccess(null)
       navigation.replace('LoginScreen')
     }
   }
@@ -402,61 +422,6 @@ class DashboardScreen extends Component {
         listItem.sku_id.toLowerCase().includes(this.state.search.toLowerCase()),
     );
   }
-  selectPhotoTapped() {
-    const options = {
-      quality: 1.0,
-      maxWidth: 500,
-      maxHeight: 500,
-      storageOptions: {
-        skipBackup: true,
-      },
-    };
-
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled photo picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        let source = {uri: response.uri};
-
-        // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-          avatarSource: source,
-        });
-      }
-    });
-  }
-  selectVideoTapped() {
-    const options = {
-      title: 'Video Picker',
-      takePhotoButtonTitle: 'Take Video...',
-      mediaType: 'video',
-      videoQuality: 'medium',
-    };
-
-    ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
-      if (response.didCancel) {
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        this.setState({
-          videoSource: response.uri,
-        });
-      }
-    });
-  }
 // ui product
   Product =(search,visible,statusAddProduct)=>{
     const {product}=this.props
@@ -602,9 +567,67 @@ class DashboardScreen extends Component {
     )
   }
   Order =(visible)=>{
+    const {Pengiriman,Alamat}= this.state
+    const {listLogistic,listAddress}= this.props
+    const catatan = []
+  // reactotron.log(listLogistic)
+  // reactotron.log(listAddress)
     return(
-      <View style={{marginLeft:visible?'50%':0}}>
-        <Text>Order</Text>
+      <View style={{marginLeft:visible?'50%':0, padding:12}}>
+          <Text>Pilih Alamat Pengiriman</Text>
+          <Picker
+            selectedValue={Pengiriman}
+            style={{ height: 50, width: 150 }}
+            onValueChange={(itemValue, itemIndex) =>this.setState({Pengiriman:itemValue})}
+            prompt="Pilih Alamat"
+          >
+            {
+              listAddress && listAddress.data && listAddress.data.length>0?
+              listAddress.data.map((data,index)=>{
+                return <Picker.Item label={data.address_label} value={data.id} />
+              })
+              :null
+            }
+          </Picker>
+          <Text>Pilih Ekspedisi Pengiriman</Text>
+          <Picker
+            selectedValue={Alamat}
+            style={{ height: 50, width: 150 }}
+            onValueChange={(itemValue, itemIndex) =>this.setState({Alamat:itemValue})}
+            prompt="Pilih jenis Pengiriman"
+          >
+              {
+              listLogistic && listLogistic.data && listLogistic.data.length>0?
+              listLogistic.data.map((data,index)=>{
+                return <Picker.Item label={data.logistic_name} value={data.id} />
+              })
+              :null
+            } 
+          </Picker>
+          <Text>Catatan</Text>
+          <TextInput
+              value={catatan[0]}
+              multiline = {true}
+              placeholder={'Catatan Pengiriman'}
+              placeholderTextColor={'#2D4070'}
+              style={{color: 'white',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:150,textAlign:'auto'}}
+              onChangeText={note => catatan[0]=note}
+              numberOfLines={4}
+              />
+          <TouchableOpacity style={{width:'100%', borderRadius:12,backgroundColor:'#2D4070', height:50,justifyContent:'center',alignItems:'center', marginTop:12}}
+            onPress={()=>
+            this.props.createOrderRequest({
+              auth:this.props.auth.data.access_token, 
+              body:{
+              "address_id": listItem.id,
+              "logistic_id": "yang rapih ya",
+              "notes": catatan[0]
+              }
+            })
+            }
+          >
+            <Text style={{color:'white'}}>Submit Order</Text>
+          </TouchableOpacity>
       </View>
     )
   }
@@ -1103,12 +1126,16 @@ const mapStateToProps = (state) => {
     errorProfile:state.profile.error,
     auth:state.auth.payload,
     product:state.product.payload,
-    cart: state.cart.payload
+    cart: state.cart.payload,
+    listAddress: state.listAddress.payload,
+    listPayment:state.listPayment.payload,
+    listLogistic: state.listLogistic.payload,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators(Object.assign(AuthActions,ProfileActions,ProductActions,LoginActions,CartRedux,ListCartRedux,UpdateCartRedux,DeleteCartRedux,ClearCartRedux) , dispatch)
+  return bindActionCreators(
+    Object.assign(AuthActions,ProfileActions,ProductActions,LoginActions,CartRedux,ListCartRedux,UpdateCartRedux,DeleteCartRedux,ClearCartRedux,CreateOrderRedux,PaymentRedux,AddressRedux,LogisticRedux) , dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen)
