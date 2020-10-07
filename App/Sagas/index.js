@@ -11,6 +11,17 @@ import { LoginTypes } from '../Redux/LoginRedux'
 import { RegisterTypes } from '../Redux/RegisterRedux'
 import { ProfileTypes } from '../Redux/ProfileRedux';
 import { ProductTypes } from '../Redux/ProductRedux';
+import { CartTypes } from '../Redux/CartRedux';
+import { ListCartTypes } from '../Redux/ListCartRedux';
+import { UpdateCartTypes } from '../Redux/UpdateCartRedux';
+import { DeleteCartTypes } from '../Redux/DeleteCartRedux';
+import { ClearCartTypes } from '../Redux/ClearCartRedux';
+import { CreateOrderTypes } from '../Redux/CreateOrderRedux';
+import { AddressTypes } from '../Redux/AddressRedux';
+import { PaymentTypes } from '../Redux/PaymentRedux';
+import { LogisticTypes } from '../Redux/LogisticRedux';
+import { GetOrderTypes } from '../Redux/GetOrderRedux';
+import { CheckoutOrderTypes } from '../Redux/CheckoutOrderRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -19,7 +30,8 @@ import { getUserAvatar } from './GithubSagas'
 import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
 import { getProfile } from './ProfileSagas';
-import { getProduct } from './ProductSagas';
+import { getProduct, getCart,getAddCart,getUpdateCart,getDeleteCart,getClearCart } from './ProductSagas';
+import { getCreateOrder, getAddress,getPayment,getLogistic,getOrder, checkoutOrder } from './CreateOrderSagas';
 
 /* ------------- API ------------- */
 
@@ -39,6 +51,17 @@ export default function * root () {
     takeLatest(LoginTypes.LOGIN_REQUEST, getLogin, api),
     takeLatest(RegisterTypes.REGISTER_REQUEST,getRegister,api),
     takeLatest(ProfileTypes.PROFILE_REQUEST,getProfile,api),
-    takeLatest(ProductTypes.PRODUCT_REQUEST,getProduct,api)
+    takeLatest(ProductTypes.PRODUCT_REQUEST,getProduct,api),
+    takeLatest(CartTypes.CART_REQUEST, getAddCart,api),
+    takeLatest(ListCartTypes.LIST_CART_REQUEST, getCart,api),
+    takeLatest(UpdateCartTypes.UPDATE_CART_REQUEST, getUpdateCart,api),
+    takeLatest(DeleteCartTypes.DELETE_CART_REQUEST, getDeleteCart,api),
+    takeLatest(ClearCartTypes.CLEAR_CART_REQUEST, getClearCart,api),
+    takeLatest(CreateOrderTypes.CREATE_ORDER_REQUEST, getCreateOrder,api),
+    takeLatest(AddressTypes.ADDRESS_REQUEST, getAddress,api),
+    takeLatest(PaymentTypes.PAYMENT_REQUEST, getPayment,api),
+    takeLatest(LogisticTypes.LOGISTIC_REQUEST, getLogistic,api),
+    takeLatest(GetOrderTypes.GET_ORDER_REQUEST, getOrder,api),
+    takeLatest(CheckoutOrderTypes.CHECKOUT_ORDER_REQUEST, checkoutOrder,api),
   ])
 }

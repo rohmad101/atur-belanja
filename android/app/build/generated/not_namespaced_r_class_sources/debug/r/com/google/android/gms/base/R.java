@@ -17,7 +17,7 @@ public final class R {
         public static final int colorScheme = 0x7f0300b2;
         public static final int imageAspectRatio = 0x7f03014a;
         public static final int imageAspectRatioAdjust = 0x7f03014b;
-        public static final int scopeUris = 0x7f0301e6;
+        public static final int scopeUris = 0x7f0301e7;
     }
     public static final class color {
         private color() {}
@@ -65,12 +65,12 @@ public final class R {
         public static final int adjust_height = 0x7f080045;
         public static final int adjust_width = 0x7f080046;
         public static final int auto = 0x7f08004b;
-        public static final int dark = 0x7f080068;
-        public static final int icon_only = 0x7f080095;
-        public static final int light = 0x7f08009e;
-        public static final int none = 0x7f0800c5;
-        public static final int standard = 0x7f080109;
-        public static final int wide = 0x7f08013a;
+        public static final int dark = 0x7f08006c;
+        public static final int icon_only = 0x7f08009a;
+        public static final int light = 0x7f0800a9;
+        public static final int none = 0x7f0800d0;
+        public static final int standard = 0x7f08011a;
+        public static final int wide = 0x7f08014c;
     }
     public static final class string {
         private string() {}
@@ -100,7 +100,7 @@ public final class R {
         public static final int LoadingImageView_circleCrop = 0;
         public static final int LoadingImageView_imageAspectRatio = 1;
         public static final int LoadingImageView_imageAspectRatioAdjust = 2;
-        public static final int[] SignInButton = { 0x7f03006a, 0x7f0300b2, 0x7f0301e6 };
+        public static final int[] SignInButton = { 0x7f03006a, 0x7f0300b2, 0x7f0301e7 };
         public static final int SignInButton_buttonSize = 0;
         public static final int SignInButton_colorScheme = 1;
         public static final int SignInButton_scopeUris = 2;

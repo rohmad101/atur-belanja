@@ -6,19 +6,20 @@ import { SearchBar,Header,Divider,Image,Input } from 'react-native-elements';
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Images } from '../Themes'
+import { NavigationActions } from 'react-navigation';
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 import LoginActions from '../Redux/LoginRedux'
 
 // Styles
 import styles from './Styles/LoginScreenStyle'
 import { bindActionCreators } from 'redux'
-import { T } from 'ramda';
 
 class LoginScreen extends Component {
   state = {
     email: '',
     password:''
   };
+
   Submit=()=>{
     // const {Login}=this.props
     let data={
@@ -33,7 +34,14 @@ class LoginScreen extends Component {
     const width = Dimensions.get('screen').width
     const heigth  =Dimensions.get('screen').height
     if(this.props.status) {
-      this.props.navigation.replace('DashboardScreen')
+      this.props.navigation.reset([NavigationActions.navigate({ routeName: 'DashboardScreen' })], 0)
+    }
+    if(this.props.fetching){
+      return(
+        <View style={{flex:1}}>
+          <ActivityIndicator/>
+        </View>
+      )
     }
     return (
       <ScrollView>
@@ -109,10 +117,11 @@ class LoginScreen extends Component {
 
 const mapStateToProps = (state) => {
   const {auth} = state
-  const {payload} = auth
+  const {payload,fetching} = auth
   // console.tron.log(state)
   return {
-    status: payload?true:false
+    status: payload?true:false,
+    fetching:fetching
   }
 }
 

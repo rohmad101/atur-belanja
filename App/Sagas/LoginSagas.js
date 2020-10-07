@@ -31,11 +31,9 @@ export function * getLogin (api, action) {
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
     yield put(LoginActions.loginSuccess(Auth.data))
     yield put (AuthActions.authSuccess(Auth.data))
-    NavigationAction.reset('LoginScreen')
     // Alert.alert('Berhasil')
   } else {
     yield put(LoginActions.loginFailure())
     Alert.alert('Whooopss , Failed Login', 'your email or password incorrect')
-    console.tron.log('response',JSON.stringify(response))
   }
 }

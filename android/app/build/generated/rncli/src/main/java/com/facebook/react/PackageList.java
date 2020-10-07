@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 // @react-native-community/masked-view
 import org.reactnative.maskedview.RNCMaskedViewPackage;
+// @react-native-community/picker
+import com.reactnativecommunity.picker.RNCPickerPackage;
 // react-native-config
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 // react-native-device-info
@@ -23,6 +25,8 @@ import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-i18n
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
+// react-native-image-picker
+import com.imagepicker.ImagePickerPackage;
 // react-native-safe-area-context
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 // react-native-screens
@@ -33,6 +37,8 @@ import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.horcrux.svg.SvgPackage;
 // react-native-vector-icons
 import com.oblador.vectoricons.VectorIconsPackage;
+// react-native-video
+import com.brentvatne.react.ReactVideoPackage;
 
 public class PackageList {
   private Application application;
@@ -80,15 +86,18 @@ public class PackageList {
       new MainReactPackage(mConfig),
       new AsyncStoragePackage(),
       new RNCMaskedViewPackage(),
+      new RNCPickerPackage(),
       new ReactNativeConfigPackage(),
       new RNDeviceInfo(),
       new RNGestureHandlerPackage(),
       new RNI18nPackage(),
+      new ImagePickerPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
       new SplashScreenReactPackage(),
       new SvgPackage(),
-      new VectorIconsPackage()
+      new VectorIconsPackage(),
+      new ReactVideoPackage()
     ));
   }
 }

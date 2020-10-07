@@ -1,9 +1,9 @@
 import { createAppContainer } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack';
 import DashboardScreen from '../Containers/DashboardScreen'
 import OnBoardingScreen from '../Containers/OnBoardingScreen'
 import SingupScreen from '../Containers/SingupScreen'
 import LoginScreen from '../Containers/LoginScreen'
-import { createStackNavigator } from 'react-navigation-stack';
 import LaunchScreen from '../Containers/LaunchScreen'
 
 import styles from './Styles/NavigationStyles'
