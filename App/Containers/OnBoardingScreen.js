@@ -4,6 +4,7 @@ import { View } from 'react-native-animatable'
 import { connect } from 'react-redux'
 import reactotron from 'reactotron-react-native'
 import { Images } from '../Themes'
+import { NavigationActions } from 'react-navigation';
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 // import YourActions from '../Redux/YourRedux'
 
@@ -81,7 +82,7 @@ class OnBoardingScreen extends Component {
          
           <TouchableOpacity 
             style={{width:'40%',maxWidth:200,height:50,backgroundColor:'#1e90ff',alignItems:'center',justifyContent:'center',borderRadius:8}}
-            onPress={() =>this.props.navigation.replace('LoginScreen')}>
+            onPress={() =>this.props.navigation.reset([NavigationActions.navigate({ routeName: 'LoginScreen' })], 0)}>
             <Text style={{fontWeight:'bold',color:'white'}}>Lewati</Text>
           </TouchableOpacity>
           <TouchableOpacity 

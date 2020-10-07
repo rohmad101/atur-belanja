@@ -15,6 +15,8 @@ import CreateOrderActions from '../Redux/CreateOrderRedux'
 import  PaymentRedux  from '../Redux/PaymentRedux'
 import  AddressRedux  from '../Redux/AddressRedux'
 import  LogisticRedux  from '../Redux/LogisticRedux'
+import  GetOrderRedux  from '../Redux/GetOrderRedux'
+import  CheckoutOrderRedux  from '../Redux/CheckoutOrderRedux'
 
 export function * getCreateOrder (api, action) {
   const { data } = action
@@ -79,5 +81,39 @@ export function * getLogistic(api, action) {
     yield put(LogisticRedux.logisticSuccess(response.data))
   } else {
     yield put(LogisticRedux.logisticFailure())
+  }
+}
+
+export function * getOrder(api, action) {
+  const { data } = action
+  // get current data from Store
+  // const currentData = yield select(CreateOrderSelectors.getData)
+  // make the call to the api
+  const response = yield call(api.getorder, data)
+
+  // success?
+  if (response.ok) {
+    // You might need to change the response here - do this with a 'transform',
+    // located in ../Transforms/. Otherwise, just pass the data back from the api.
+    yield put(GetOrderRedux.getOrderSuccess(response.data))
+  } else {
+    yield put(GetOrderRedux.getOrderFailure())
+  }
+}
+
+export function * checkoutOrder(api, action) {
+  const { data } = action
+  // get current data from Store
+  // const currentData = yield select(CreateOrderSelectors.getData)
+  // make the call to the api
+  const response = yield call(api.checkoutorder, data)
+
+  // success?
+  if (response.ok) {
+    // You might need to change the response here - do this with a 'transform',
+    // located in ../Transforms/. Otherwise, just pass the data back from the api.
+    yield put(CheckoutOrderRedux.checkoutOrderSuccess(response.data))
+  } else {
+    yield put(CheckoutOrderRedux.checkoutOrderFailure())
   }
 }

@@ -28,6 +28,8 @@ import CreateOrderRedux from '../Redux/CreateOrderRedux'
 import AddressRedux from '../Redux/AddressRedux'
 import PaymentRedux from '../Redux/PaymentRedux'
 import LogisticRedux from '../Redux/LogisticRedux'
+import GetOrderRedux from '../Redux/GetOrderRedux';
+import CheckoutOrderRedux from '../Redux/CheckoutOrderRedux';
 // Styles
 import styles from './Styles/DashboardScreenStyle'
 
@@ -43,6 +45,7 @@ class DashboardScreen extends Component {
     videoSource: null,
     order:[],
     Pengiriman:'',
+    payment:'',
     Alamat:'',
     suggestion:[ 
       {
@@ -85,7 +88,7 @@ class DashboardScreen extends Component {
  
   }
   componentDidUpdate(prevProps, prevState, snapshot){
-    const { listCartRequest,productRequest,profileRequest,auth,navigation,paymentRequest,addressRequest,logisticRequest,product }= this.props
+    const { listCartRequest,productRequest,profileRequest,auth,navigation,paymentRequest,addressRequest,logisticRequest,product,getOrderRequest }= this.props
     // reactotron.log(product)
     if(product&&product.status===400||product&&product.status==='400'){
       this.props.authSuccess(null)
@@ -114,7 +117,13 @@ class DashboardScreen extends Component {
         // reactotron.log('auth',auth)
         logisticRequest(auth.data.access_token)  
         addressRequest(auth.data.access_token)  
- } 
+      } 
+      if(this.state.selectedMenu === 'PAYMENT') {
+        // alert(JSON.stringify(auth.payload.data.authorization_code))
+        // reactotron.log('auth',auth)
+        paymentRequest(auth.data.access_token)  
+        getOrderRequest(auth.data.access_token)
+      } 
     }
     if(prevState.selectedMenu !== this.state.selectedMenu){
       
@@ -606,12 +615,12 @@ class DashboardScreen extends Component {
           </Picker>
           <Text>Catatan</Text>
           <TextInput
-              value={catatan[0]}
+              value={catatan[1]}
               multiline = {true}
               placeholder={'Catatan Pengiriman'}
               placeholderTextColor={'#2D4070'}
-              style={{color: 'white',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:150,textAlign:'auto'}}
-              onChangeText={note => catatan[0]=note}
+              style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:150,textAlign:'auto'}}
+              onChangeText={note => catatan[1]=note}
               numberOfLines={4}
               />
           <TouchableOpacity style={{width:'100%', borderRadius:12,backgroundColor:'#2D4070', height:50,justifyContent:'center',alignItems:'center', marginTop:12}}
@@ -619,9 +628,9 @@ class DashboardScreen extends Component {
             this.props.createOrderRequest({
               auth:this.props.auth.data.access_token, 
               body:{
-              "address_id": listItem.id,
-              "logistic_id": "yang rapih ya",
-              "notes": catatan[0]
+              "address_id": Pengiriman,
+              "logistic_id": Alamat,
+              "notes": catatan[1]
               }
             })
             }
@@ -632,9 +641,53 @@ class DashboardScreen extends Component {
     )
   }
   Payment =(visible)=>{
+    const {payment} = this.state
+    const {getorder,listPayment,checkoutorder} = this.props
     return(
-      <View style={{marginLeft:visible?'50%':0}}>
-        <Text>Investment</Text>
+      <View style={{marginLeft:visible?'50%':0, padding:12}}>
+        {
+          getorder && getorder.data && getorder.data.length>0?
+          <View style={{width:'100%', justifyContent:'center', alignItems:'center'}}>
+            <Text>Order Id : {getorder.data[0].order_id}</Text>
+            <Text>Pemilik order : {getorder.data[0].name}</Text>
+            <Text>Waktu Order : {getorder.data[0].order_date}</Text>
+            <Text>Catatan : {getorder.data[0].notes}</Text>
+            <Text>Status Pembayaran : {getorder.data[0].status}</Text>
+        </View>
+          :null
+        }
+     
+          <Text>Pilih Payment : </Text>
+          <Picker
+            selectedValue={payment}
+            style={{ height: 50, width: 150 }}
+            onValueChange={(itemValue, itemIndex) =>this.setState({payment:itemValue})}
+            prompt="Pilih Alamat"
+          >
+            {
+              listPayment && listPayment.message && listPayment.message.length>0?
+              listPayment.message.map((data,index)=>{
+                return <Picker.Item label={data.bank} value={data.id} />
+              })
+              :null
+            }
+          </Picker>
+          <TouchableOpacity style={{width:'100%', borderRadius:12,backgroundColor:'#2D4070', height:50,justifyContent:'center',alignItems:'center', marginTop:12}}
+            onPress={()=>
+            this.props.checkoutOrderRequest({
+              auth:this.props.auth.data.access_token, 
+              body:{
+                "order_no": getorder && getorder.data && getorder.data.length>0?getorder.data[0].order_id:null,
+                "payment_id": payment
+              }
+            })
+            }
+          >
+            <Text style={{color:'white'}}>Checkout Order</Text>
+          </TouchableOpacity>
+          {checkoutorder?
+          <Text>{checkoutorder.notes}</Text>
+          :null}
       </View>
     )
   }
@@ -1118,7 +1171,6 @@ class DashboardScreen extends Component {
 }
 
 const mapStateToProps = (state) => {
-  reactotron.log(state)
   return {
     dataProfile:state.profile.data,
     fetchingProfile:state.profile.fetching,
@@ -1130,12 +1182,30 @@ const mapStateToProps = (state) => {
     listAddress: state.listAddress.payload,
     listPayment:state.listPayment.payload,
     listLogistic: state.listLogistic.payload,
+    getorder: state.getorder.payload,
+    checkoutorder: state.checkoutorder.payload
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
-    Object.assign(AuthActions,ProfileActions,ProductActions,LoginActions,CartRedux,ListCartRedux,UpdateCartRedux,DeleteCartRedux,ClearCartRedux,CreateOrderRedux,PaymentRedux,AddressRedux,LogisticRedux) , dispatch)
+    Object.assign(
+      AuthActions,
+      ProfileActions,
+      ProductActions,
+      LoginActions,
+      CartRedux,
+      ListCartRedux,
+      UpdateCartRedux,
+      DeleteCartRedux,
+      ClearCartRedux,
+      CreateOrderRedux,
+      PaymentRedux,
+      AddressRedux,
+      LogisticRedux,
+      GetOrderRedux,
+      CheckoutOrderRedux
+      ) , dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen)

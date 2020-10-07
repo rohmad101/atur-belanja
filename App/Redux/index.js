@@ -22,6 +22,8 @@ export const reducers = combineReducers({
   listAddress:require('./AddressRedux').reducer,
   listPayment: require('./PaymentRedux').reducer,
   listLogistic:require('./LogisticRedux').reducer,
+  getorder:require('./GetOrderRedux').reducer,
+  checkoutorder: require('./CheckoutOrderRedux').reducer
 })
 
 export default () => {

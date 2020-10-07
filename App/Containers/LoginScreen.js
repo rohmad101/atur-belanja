@@ -6,6 +6,7 @@ import { SearchBar,Header,Divider,Image,Input } from 'react-native-elements';
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import { Images } from '../Themes'
+import { NavigationActions } from 'react-navigation';
 // Add Actions - replace 'Your' with whatever your reducer is called :)
 import LoginActions from '../Redux/LoginRedux'
 
@@ -33,7 +34,7 @@ class LoginScreen extends Component {
     const width = Dimensions.get('screen').width
     const heigth  =Dimensions.get('screen').height
     if(this.props.status) {
-      this.props.navigation.replace('DashboardScreen')
+      this.props.navigation.reset([NavigationActions.navigate({ routeName: 'DashboardScreen' })], 0)
     }
     if(this.props.fetching){
       return(

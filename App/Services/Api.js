@@ -53,6 +53,8 @@ const create = (baseURL = URL) => {
   const getpayment =(payload)=> api.get('/mt/getpayment',{}, { headers: { Authorization: payload } } )
   const getaddressuser =(payload)=> api.get('/mt/getaddressuser',{}, { headers: { Authorization: payload } } )
   const getlistlogistic =(payload)=> api.get('/mt/getlistlogistics')
+  const getorder =(payload)=> api.post('/mt/getorder',{}, { headers: { Authorization: payload } } )
+  const checkoutorder =(payload)=> api.post('/mt/checkoutorder',payload.body,{ headers: { Authorization: payload.auth } })
   // ------
   // STEP 3
   // ------
@@ -83,7 +85,9 @@ const create = (baseURL = URL) => {
     createOrder,
     getpayment,
     getaddressuser,
-    getlistlogistic
+    getlistlogistic,
+    getorder,
+    checkoutorder
   }
 }
 
