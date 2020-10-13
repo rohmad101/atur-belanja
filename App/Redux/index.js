@@ -23,7 +23,13 @@ export const reducers = combineReducers({
   listPayment: require('./PaymentRedux').reducer,
   listLogistic:require('./LogisticRedux').reducer,
   getorder:require('./GetOrderRedux').reducer,
-  checkoutorder: require('./CheckoutOrderRedux').reducer
+  checkoutorder: require('./CheckoutOrderRedux').reducer,
+  province: require('./ProviceRedux').reducer,
+  cities: require('./CitiesRedux').reducer,
+  district: require('./DistrictRedux').reducer,
+  subdistrict: require('./SubDistrictRedux').reducer,
+  detailProduct: require('./DetailProductRedux').reducer,
+  historyOrder: require('./HistoryOrderRedux').reducer
 })
 
 export default () => {

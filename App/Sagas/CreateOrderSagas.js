@@ -17,6 +17,7 @@ import  AddressRedux  from '../Redux/AddressRedux'
 import  LogisticRedux  from '../Redux/LogisticRedux'
 import  GetOrderRedux  from '../Redux/GetOrderRedux'
 import  CheckoutOrderRedux  from '../Redux/CheckoutOrderRedux'
+import  HistoryOrderRedux  from '../Redux/HistoryOrderRedux'
 
 export function * getCreateOrder (api, action) {
   const { data } = action
@@ -29,6 +30,8 @@ export function * getCreateOrder (api, action) {
   if (response.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
+
+    Alert.alert("Create Order berhasil","untuk melakukan pembayaran silahkan ke menu Payment")
     yield put(CreateOrderActions.createOrderSuccess(response.data))
   } else {
     yield put(CreateOrderActions.createOrderFailure())
@@ -112,8 +115,26 @@ export function * checkoutOrder(api, action) {
   if (response.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
+  Alert.alert("Checkout Berhasil",response.data.checkoutorder.notes)
     yield put(CheckoutOrderRedux.checkoutOrderSuccess(response.data))
   } else {
     yield put(CheckoutOrderRedux.checkoutOrderFailure())
+  }
+}
+
+export function * getHistoryOrder(api, action) {
+  const { data } = action
+  // get current data from Store
+  // const currentData = yield select(CreateOrderSelectors.getData)
+  // make the call to the api
+  const response = yield call(api.gethistoryorder, data)
+
+  // success?
+  if (response.ok) {
+    // You might need to change the response here - do this with a 'transform',
+    // located in ../Transforms/. Otherwise, just pass the data back from the api.
+    yield put(HistoryOrderRedux.historyOrderSuccess(response.data))
+  } else {
+    yield put(HistoryOrderRedux.historyOrderFailure())
   }
 }

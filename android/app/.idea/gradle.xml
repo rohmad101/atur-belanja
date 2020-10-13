@@ -14,14 +14,18 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/../../node_modules/@react-native-community/async-storage/android" />
             <option value="$PROJECT_DIR$/../../node_modules/@react-native-community/masked-view/android" />
+            <option value="$PROJECT_DIR$/../../node_modules/@react-native-community/picker/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-config/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-device-info/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-gesture-handler/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-i18n/android" />
+            <option value="$PROJECT_DIR$/../../node_modules/react-native-image-picker/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-safe-area-context/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-screens/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-splash-screen/android" />
+            <option value="$PROJECT_DIR$/../../node_modules/react-native-svg/android" />
             <option value="$PROJECT_DIR$/../../node_modules/react-native-vector-icons/android" />
+            <option value="$PROJECT_DIR$/../../node_modules/react-native-video/android" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

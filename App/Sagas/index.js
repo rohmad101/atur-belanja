@@ -22,6 +22,13 @@ import { PaymentTypes } from '../Redux/PaymentRedux';
 import { LogisticTypes } from '../Redux/LogisticRedux';
 import { GetOrderTypes } from '../Redux/GetOrderRedux';
 import { CheckoutOrderTypes } from '../Redux/CheckoutOrderRedux';
+import { AddAddressTypes } from '../Redux/AddAddressRedux';
+import { ProviceTypes } from '../Redux/ProviceRedux';
+import { CitiesTypes } from '../Redux/CitiesRedux';
+import { DistrictTypes } from '../Redux/DistrictRedux';
+import { SubDistrictTypes } from '../Redux/SubDistrictRedux';
+import { DetailProductTypes } from '../Redux/DetailProductRedux';
+import { HistoryOrderTypes } from '../Redux/HistoryOrderRedux';
 
 /* ------------- Sagas ------------- */
 
@@ -29,9 +36,10 @@ import { startup } from './StartupSagas'
 import { getUserAvatar } from './GithubSagas'
 import { getLogin } from './LoginSagas'
 import { getRegister } from './RegisterSagas';
-import { getProfile } from './ProfileSagas';
+import { getProfile, addAddress, getCities,getDistrict,getProvince,getSubDistrict } from './ProfileSagas';
 import { getProduct, getCart,getAddCart,getUpdateCart,getDeleteCart,getClearCart } from './ProductSagas';
-import { getCreateOrder, getAddress,getPayment,getLogistic,getOrder, checkoutOrder } from './CreateOrderSagas';
+import { getCreateOrder, getAddress,getPayment,getLogistic,getOrder, checkoutOrder, getHistoryOrder } from './CreateOrderSagas';
+import { getDetailProduct } from './DetailProductSagas';
 
 /* ------------- API ------------- */
 
@@ -63,5 +71,12 @@ export default function * root () {
     takeLatest(LogisticTypes.LOGISTIC_REQUEST, getLogistic,api),
     takeLatest(GetOrderTypes.GET_ORDER_REQUEST, getOrder,api),
     takeLatest(CheckoutOrderTypes.CHECKOUT_ORDER_REQUEST, checkoutOrder,api),
-  ])
+    takeLatest(AddAddressTypes.ADD_ADDRESS_REQUEST, addAddress,api),
+    takeLatest(ProviceTypes.PROVICE_REQUEST, getProvince,api),
+    takeLatest(CitiesTypes.CITIES_REQUEST, getCities,api),
+    takeLatest(DistrictTypes.DISTRICT_REQUEST, getDistrict,api),
+    takeLatest(SubDistrictTypes.SUB_DISTRICT_REQUEST, getSubDistrict,api),
+    takeLatest(DetailProductTypes.DETAIL_PRODUCT_REQUEST, getDetailProduct, api),
+    takeLatest(HistoryOrderTypes.HISTORY_ORDER_REQUEST, getHistoryOrder, api)
+  ]) 
 }

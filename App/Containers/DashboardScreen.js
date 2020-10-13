@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react'
 import { ScrollView, Text, KeyboardAvoidingView, TouchableOpacity, Alert, ActivityIndicator, Dimensions } from 'react-native'
 import {Picker} from '@react-native-community/picker';
 import { View } from 'react-native-animatable'
+
 import { connect } from 'react-redux'
 import { sliderWidth, itemWidth } from './Styles/SliderEntery.styles';
 import SliderEntry from './components/SliderEntry';
@@ -30,12 +31,19 @@ import PaymentRedux from '../Redux/PaymentRedux'
 import LogisticRedux from '../Redux/LogisticRedux'
 import GetOrderRedux from '../Redux/GetOrderRedux';
 import CheckoutOrderRedux from '../Redux/CheckoutOrderRedux';
+import AddAddressRedux from '../Redux/AddAddressRedux';
+import ProviceRedux from '../Redux/ProviceRedux';
+import CitiesRedux from '../Redux/CitiesRedux';
+import DistrictRedux from '../Redux/DistrictRedux';
+import SubDistrictRedux from '../Redux/SubDistrictRedux';
+import HistoryOrderRedux from '../Redux/HistoryOrderRedux';
 // Styles
 import styles from './Styles/DashboardScreenStyle'
+import { getHistoryOrder } from '../Sagas/CreateOrderSagas';
 
 class DashboardScreen extends Component {
   state={
-    selectedMenu:'PRODUCT',
+    selectedMenu:'DASHBOARD',
     search:'',
     visible:false,
     slider1ActiveSlide:0,
@@ -43,10 +51,24 @@ class DashboardScreen extends Component {
     statusAddProduct:false,
     avatarSource: null,
     videoSource: null,
+    addAdress:false,
     order:[],
     Pengiriman:'',
     payment:'',
     Alamat:'',
+    orderId:'',
+    createAddress:{
+      address_label: "",
+      address_line1: "",
+      address_line2: "",
+      province_id: "",
+      city_id: "",
+      district_id: "",
+      subdistrict_id: "",
+      zip_code: "",
+      notes: "",
+      phone_no: ""
+    },
     suggestion:[ 
       {
         title: 'Beautiful and dramatic Antelope Canyon',
@@ -81,20 +103,65 @@ class DashboardScreen extends Component {
     ]
   }
 
-  componentDidMount(){
-    const {profileRequest,productRequest,auth }= this.props
-    productRequest(auth.data.access_token)
+ async componentDidMount(){
+    const {profileRequest,productRequest,auth,proviceRequest }= this.props
+   await productRequest(auth.data.access_token)
+    proviceRequest(auth.data.access_token)
+   await profileRequest(auth.data.access_token)
     // profileRequest(auth.data.access_token)
  
   }
   componentDidUpdate(prevProps, prevState, snapshot){
-    const { listCartRequest,productRequest,profileRequest,auth,navigation,paymentRequest,addressRequest,logisticRequest,product,getOrderRequest }= this.props
+    const { 
+      listCartRequest,productRequest,profileRequest,auth,navigation,paymentRequest,addressRequest,logisticRequest,product,getOrderRequest,
+      cities,district,subdistrict,subDistrictRequest,districtRequest,citiesRequest,historyOrderRequest
+    }= this.props
     // reactotron.log(product)
     if(product&&product.status===400||product&&product.status==='400'){
       this.props.authSuccess(null)
       this.props.loginSuccess(null)
       navigation.replace('LoginScreen')
     }
+    if(!cities && this.state.createAddress.province_id){
+      citiesRequest({
+          auth:this.props.auth.data.access_token, 
+          body:this.state.createAddress.province_id
+        })
+    }else{
+      if(this.state.createAddress.province_id !== prevState.createAddress.province_id){
+        citiesRequest({
+          auth:this.props.auth.data.access_token, 
+          body:this.state.createAddress.province_id
+        })
+      }
+    }
+    if(!district && this.state.createAddress.city_id){
+      districtRequest({
+        auth:this.props.auth.data.access_token, 
+        body:this.state.createAddress.city_id
+      })
+    }else{
+      if(this.state.createAddress.city_id !== prevState.createAddress.city_id){
+        districtRequest({
+          auth:this.props.auth.data.access_token, 
+          body:this.state.createAddress.city_id
+        })
+      }
+    }
+    if(!subdistrict && this.state.createAddress.district_id){
+      subDistrictRequest({
+        auth:this.props.auth.data.access_token, 
+        body:this.state.createAddress.district_id
+      })
+    }else{
+      if(this.state.createAddress.district_id !== prevState.createAddress.district_id){
+        subDistrictRequest({
+          auth:this.props.auth.data.access_token, 
+          body:this.state.createAddress.district_id
+        })
+      }
+    }
+    
     if(auth){
       if(prevState.selectedMenu !== this.state.selectedMenu){
         if(this.state.selectedMenu === 'SETTINGS') {
@@ -107,7 +174,7 @@ class DashboardScreen extends Component {
               // reactotron.log('auth',auth)
               productRequest(auth.data.access_token)  
        } 
-        if(this.state.selectedMenu === 'REPORT') {
+        if(this.state.selectedMenu === 'CART') {
               // alert(JSON.stringify(auth.payload.data.authorization_code))
               // reactotron.log('auth',auth)
               listCartRequest(auth.data.access_token)  
@@ -123,6 +190,11 @@ class DashboardScreen extends Component {
         // reactotron.log('auth',auth)
         paymentRequest(auth.data.access_token)  
         getOrderRequest(auth.data.access_token)
+      } 
+      if(this.state.selectedMenu === 'HISTORY') {
+        // alert(JSON.stringify(auth.payload.data.authorization_code))
+        // reactotron.log('auth',auth)
+        historyOrderRequest(auth.data.access_token) 
       } 
     }
     if(prevState.selectedMenu !== this.state.selectedMenu){
@@ -187,6 +259,15 @@ class DashboardScreen extends Component {
   //   )
   // }
   Dashboard =(visible)=>{
+
+    const {payloadProfile, navigation} = this.props
+    if(!payloadProfile) {
+        return(
+          <View style={{width:'100%', height:'100%', justifyContent:'center', alignItems:'center'}}>
+              <ActivityIndicator  color={'blue'}/>
+          </View>
+        )
+    }
     const data = {
       labels: [1,2,3,4,5,6,7,8,9],
       legend: [],
@@ -213,13 +294,15 @@ class DashboardScreen extends Component {
       barPercentage: 0.5,
       useShadowColorFromDataset: false // optional
     };
+
+    const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
     return(
       <ScrollView>
-        <View style={{flex:1,marginLeft:visible?'50%':0}}>
+        <View style={{flex:1, }}>
           <View style={{backgroundColor:'#2D4070',width:"100%",alignItems:'center'}}>
             {/* intro */}
             <View style={{width:"100%", height:Dimensions.get('screen').height*0.15, backgroundColor:'#50E348', borderBottomLeftRadius:12,borderBottomRightRadius:12,padding:12}}>
-              <View style={{flexDirection:'row'}}><Text  style={{fontSize:20}}>Hi, </Text><Text style={{fontWeight:'bold',fontSize:20}}>Rohmat</Text></View>
+              <View style={{flexDirection:'row'}}><Text  style={{fontSize:20}}>Hi, </Text><Text style={{fontWeight:'bold',fontSize:20}}>{display_name}</Text></View>
               <Text style={{fontSize:20}}>your free trial will expire in 6 days</Text>
               <View style={{width:'100%', flexDirection:'row',justifyContent:'flex-end',paddingTop:Dimensions.get('screen').height*0.03}}>
                 <Text style={{color:'#4C4F4C',marginRight:4}}>Select Package</Text> 
@@ -433,7 +516,7 @@ class DashboardScreen extends Component {
   }
 // ui product
   Product =(search,visible,statusAddProduct)=>{
-    const {product}=this.props
+    const {product,navigation}=this.props
     const {width,height}=Dimensions.get('screen')
     const list = [
       {artist: 'The Weeknd', song: 'Blinding Lights'},
@@ -498,8 +581,7 @@ class DashboardScreen extends Component {
     //   )
     // }
     return(
-      <ScrollView>
-      <View style={{alignItems: 'center',height: Dimensions.get('screen').height,marginLeft:visible?'50%':0}}>
+      <View style={{alignItems: 'center',height: Dimensions.get('screen').height*0.85 }}>
         <View style={{width:'100%', backgroundColor:'#5BE553',height:'10%',minHeight:80, justifyContent:'center',alignItems:'center'}}>
           <TextInput
             value={search}
@@ -511,7 +593,7 @@ class DashboardScreen extends Component {
               height: 50,borderRadius:8, backgroundColor:'white'}}
           />
         </View>
-        <View style={{width:'100%', backgroundColor:'#2D4070',height:'10%',minHeight:80, justifyContent:'space-around',alignItems:'center',flexDirection:'row'}}>
+        {/* <View style={{width:'100%', backgroundColor:'#2D4070',height:'10%',minHeight:80, justifyContent:'space-around',alignItems:'center',flexDirection:'row'}}>
          <TouchableOpacity style={{flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%'}} onPress={()=>this.setState({statusAddProduct: !statusAddProduct})}>
           <Image source={Images.add} style={{width:30,height:30}}/>
           <Text style={{color:'white', fontSize:14}}>Add</Text>
@@ -526,28 +608,31 @@ class DashboardScreen extends Component {
           <Text style={{color:'white', fontSize:24, fontWeight:'bold'}}>. . .</Text>
           <Text style={{color:'white', fontSize:14}}>More</Text>
          </TouchableOpacity>
+        </View> */}
+        <ScrollView>
+        <View style={{padding:8}}>
+          <Text style={{color:'#2D4070'}}>{product && product.data?product.data.length:0} Product</Text>
         </View>
-        <View style={{width:'75%',paddingTop:24}}>
-          <Text style={{color:'#2D4070'}}>3 Product</Text>
-        </View>
+        <View style={{width:width, height:'100%', justifyContent:'center', alignItems:'center'}}>
         { product && product.data && product.data.length>0 ?
         this.filterList(product.data).map((listItem, index) => (
-           <View style={{alignItems: 'center',padding: 24, width: '90%',flexDirection:'column'}}>
-             <View style={{flexDirection:'row',width:'100%'}}>
-               <Image source={{uri:listItem.url}} style={{width:80,height:100}}/>
-               <View style={{flexDirection:'column',width:'100%', paddingLeft:12}}>
-                 <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}>{listItem.name}</Text>
-                 <Text style={{color:'#2D4070',paddingVertical:6}}>Rp {listItem.price}</Text>
-                 <View style={{flexDirection:'row',width:'70%',justifyContent:'space-between'}}>
-                  <Text style={{color:'#2D4070'}}>Stock: 5</Text>
-                  <Text style={{color: 'white',fontSize: 12,backgroundColor:'#6A8E78',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>Variant</Text>
-                  <Text style={{color: 'black',fontSize: 12,backgroundColor:'#E3CA43',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>OwnStock</Text>
-                 </View>
-              </View>
+           <View style={{alignItems: 'center',paddingVertical: 24, marginBottom:12, width: width*0.85, paddingLeft:24,flexDirection:'column',justifyContent:'center'}}>
+             <TouchableOpacity onPress={()=>  navigation.navigate('DetailProductScreen', { itemId:listItem.id})}> 
+            <View style={{flexDirection:'row',width:'100%'}}>
+                <Image source={{uri:listItem.url}} style={{width:80,height:100}}/>
+                <View style={{flexDirection:'column',width:'100%', paddingLeft:12}}>
+                  <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}>{listItem.name}</Text>
+                  <Text style={{color:'#2D4070',paddingVertical:6}}>Rp {listItem.price}</Text>
+                  <View style={{flexDirection:'row',width:'70%',justifyContent:'space-between'}}>
+                    <Text style={{color:'#2D4070'}}>Stock: 5</Text>
+                    <Text style={{color: 'white',fontSize: 12,backgroundColor:'#6A8E78',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>Variant</Text>
+                    <Text style={{color: 'black',fontSize: 12,backgroundColor:'#E3CA43',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>OwnStock</Text>
+                  </View>
+                </View>
             </View>
+             </TouchableOpacity>
+            
             <View style={{flexDirection:'row',width:'100%',justifyContent:'flex-end'}}>
-              {/* <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Archive</Text>
-              <Text onPress={()=>Alert.alert('on development',' this feature still on development')} style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:6,borderRadius:8,width:'30%',textAlign:'center'}}>Edit</Text> */}
               <TextInput
               value={qty[index]}
               placeholder={'input qty'}
@@ -571,18 +656,20 @@ class DashboardScreen extends Component {
             </View>
          </View>
         )):null}
+        </View>
+        </ScrollView>
       </View>
-      </ScrollView>
     )
   }
   Order =(visible)=>{
-    const {Pengiriman,Alamat}= this.state
+    const {Pengiriman,Alamat,addAdress}= this.state
     const {listLogistic,listAddress}= this.props
     const catatan = []
   // reactotron.log(listLogistic)
   // reactotron.log(listAddress)
     return(
-      <View style={{marginLeft:visible?'50%':0, padding:12}}>
+      <View style={{  padding:12}}>
+          
           <Text>Pilih Alamat Pengiriman</Text>
           <Picker
             selectedValue={Pengiriman}
@@ -598,6 +685,9 @@ class DashboardScreen extends Component {
               :null
             }
           </Picker>
+          <Text style={{width:'60%', borderRadius:12,backgroundColor:'#2D4070',justifyContent:'center',alignItems:'center', marginTop:12, padding:12, color:"white"}}
+          onPress={()=> this.setState({addAdress:!addAdress})}
+          >Tambah Alamat Pengiriman</Text>
           <Text>Pilih Ekspedisi Pengiriman</Text>
           <Picker
             selectedValue={Alamat}
@@ -640,19 +730,37 @@ class DashboardScreen extends Component {
       </View>
     )
   }
+
   Payment =(visible)=>{
-    const {payment} = this.state
+    const {payment, orderId} = this.state
     const {getorder,listPayment,checkoutorder} = this.props
     return(
-      <View style={{marginLeft:visible?'50%':0, padding:12}}>
+      <View style={{ padding:12}}>
+        <Text>Pilih Order</Text>
+        <Picker
+                selectedValue={orderId}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) =>this.setState({
+                  orderId: itemValue
+                })}
+                prompt="Pilih Kota/Kabupaten"
+              >
+                  {
+                  getorder && getorder.data && getorder.data.length>0?
+                  getorder.data.map((data,index)=>{
+                    return <Picker.Item label={data.order_id} value={data} />
+                  })
+                  :null
+                } 
+              </Picker>
         {
-          getorder && getorder.data && getorder.data.length>0?
+          orderId?
           <View style={{width:'100%', justifyContent:'center', alignItems:'center'}}>
-            <Text>Order Id : {getorder.data[0].order_id}</Text>
-            <Text>Pemilik order : {getorder.data[0].name}</Text>
-            <Text>Waktu Order : {getorder.data[0].order_date}</Text>
-            <Text>Catatan : {getorder.data[0].notes}</Text>
-            <Text>Status Pembayaran : {getorder.data[0].status}</Text>
+            <Text>Order Id : {orderId.order_id}</Text>
+            <Text>Pemilik order : {orderId.name}</Text>
+            <Text>Waktu Order : {orderId.order_date}</Text>
+            <Text>Catatan : {orderId.notes}</Text>
+            <Text>Status Pembayaran : {orderId.status}</Text>
         </View>
           :null
         }
@@ -677,7 +785,7 @@ class DashboardScreen extends Component {
             this.props.checkoutOrderRequest({
               auth:this.props.auth.data.access_token, 
               body:{
-                "order_no": getorder && getorder.data && getorder.data.length>0?getorder.data[0].order_id:null,
+                "order_no": getorder && getorder.data && getorder.data.length>0?orderId.order_id:null,
                 "payment_id": payment
               }
             })
@@ -691,7 +799,7 @@ class DashboardScreen extends Component {
       </View>
     )
   }
-  Report =(visible)=>{
+  Cart =(visible)=>{
     const {cart} = this.props
    
     const qty=[]
@@ -701,10 +809,17 @@ class DashboardScreen extends Component {
         qty[index]=data.qty
       })
     }
+    if(!cart){
+      return(
+        <View style={{width:'100%', height:'100%', justifyContent: 'center',alignItems:'center'}}>
+          <ActivityIndicator size={'large'} color='blue' style={{width: 50,height:50}}/>
+        </View>
+      )
+    }
     // reactotron.log(cart)
     return(
       <ScrollView style={{height: Dimensions.get('screen').height*0.85}}>
-      <View style={{alignItems: 'center',marginLeft:visible?'50%':0}}>
+      <View style={{alignItems: 'center', }}>
         <View style={{width:'100%', justifyContent:'flex-end', alignItems:'center',flexDirection:'row'}}>
         <Text onPress={()=>{
               this.props.clearCartRequest(this.props.auth.data.access_token)
@@ -767,35 +882,62 @@ class DashboardScreen extends Component {
       </ScrollView>
     )
   }
-  Analyzer =(visible)=>{
+  History =(visible)=>{
+    const {historyOrder}=this.props
+    if(!historyOrder){
+      return(
+        <View style={{width:'100%', height:'100%', justifyContent: 'center',alignItems:'center'}}>
+          <ActivityIndicator size={'large'} color='blue' style={{width: 50,height:50}}/>
+        </View>
+      )
+    }
     return(
-      <View style={{marginLeft:visible?'50%':0}}>
-        <Text>Analyzer</Text>
+      <ScrollView style={{height: Dimensions.get('screen').height*0.85}}>
+      <View style={{alignItems: 'center', }}>
+        { historyOrder && historyOrder.data && historyOrder.data.length>0 ?
+         historyOrder.data.map((listItem, index) => (
+           <View style={{flexDirection:'row'}}>
+            <Text style={{fontSize:50, fontWeight:'600', textAlign:'center',alignSelf:'center'}}>{index+1}</Text>
+            <View style={{alignItems: 'center',padding: 24, width: '90%',flexDirection:'column'}}>
+             <View style={{flexDirection:'row',width:'100%'}}>
+               <View style={{flexDirection:'column',width:'100%', paddingLeft:12}}>
+                 <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}> Invoice :{listItem.invoice_no?listItem.invoice_no:'Belum Ada Invoice'}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Jenis Pembayaran:  {listItem.jenis_pembayaran}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Status Pembayaran:  {listItem.status_pembayaran}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Status Pengiriman:  {listItem.status_pengiriman}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Tanggal Pemesanan:  {listItem.tanggal_pemesanan}</Text>
+              </View>
+            </View>
+         </View>
+          </View>
+          
+        )):null}
       </View>
+      </ScrollView>
     )
   }
   Addons =(visible)=>{
     return(
-      <View style={{marginLeft:visible?'50%':0}}>
+      <View style={{ }}>
         <Text>Addons</Text>
       </View>
     )
   }
   Mutasi =(visible)=>{
     return(
-      <View style={{marginLeft:visible?'50%':0}}>
+      <View style={{ }}>
         <Text>Mutasi</Text>
       </View>
     )
   }
   Settings =(visible)=>{
-    const {payloadProfile} = this.props
+    const {payloadProfile, navigation} = this.props
     if(payloadProfile && payloadProfile.data) {
       const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
       return(
         <ScrollView>
-        <View style={{flex:1,margin:12,paddingVertical:12,marginLeft:visible?'50%':0}}>
-            <View style={{width:'100%', flexDirection:'row'}}>
+        <View style={{flex:1,margin:12,paddingVertical:12, }}>
+            <TouchableOpacity style={{width:'100%', flexDirection:'row'}} onPress={()=> navigation.navigate('ProfileScreen')}>
               <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
               <View style={{justifyContent:'center'}}>
                 <Text style={{fontWeight:'bold',paddingLeft:8}}>{display_name}</Text>
@@ -805,7 +947,7 @@ class DashboardScreen extends Component {
                   <Icon name="chevron-right"  style={{width:20,height:20}}/>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
             {/* menu profile */}
             <View style={{flexDirection:'row',marginTop:12, width:'100%',alignSelf:'baseline',paddingVertical:20,borderColor:'grey', borderWidth:0.5, borderRadius:4, justifyContent:'space-around',alignItems:'center'}}>
               <View style={{width:'30%',alignItems:'center',justifyContent:'center', flexDirection:'column'}}>
@@ -973,7 +1115,8 @@ class DashboardScreen extends Component {
     this.setState({ search });
   };
   render () {
-    const { selectedMenu,search,visible,statusAddProduct } = this.state
+    const {addAddressRequest, province,cities,district,subdistrict,payloadProfile} = this.props
+    const { selectedMenu,search,visible,statusAddProduct,addAdress,createAddress } = this.state
     return (
       <View style={[{flex:1,height:'100%',backgroundColor:'#F5F5F5'}]}>
         {
@@ -1019,7 +1162,7 @@ class DashboardScreen extends Component {
           </View>
           }
           backgroundColor={'#fff'}
-          containerStyle={{marginTop:0,marginLeft:visible?'50%':0}}
+          containerStyle={{marginTop:0, }}
         /> 
         }
       
@@ -1043,12 +1186,12 @@ class DashboardScreen extends Component {
          }
          {
 
-          selectedMenu==='REPORT' ?
-          this.Report(visible):null
+          selectedMenu==='CART' ?
+          this.Cart(visible):null
          }
          {
-          selectedMenu==='ANALYZER' ?
-          this.Analyzer(visible):null
+          selectedMenu==='HISTORY' ?
+          this.History(visible):null
          }
          {
 
@@ -1075,7 +1218,7 @@ class DashboardScreen extends Component {
           >
             <View style={{width:'100%',height:'12%',flexDirection:'row',alignItems:'center',justifyContent:'space-around',padding:10,paddingVertical:20}}>
               <Image source={Images.user_icon} style={{width:40,height:40, borderRadius:20}} />
-              <Text style={{color:'#2C7D28',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'}} numberOfLines={3}>Rohmat Dasuki</Text>
+              <Text style={{color:'#2C7D28',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'}} numberOfLines={3}>{payloadProfile&&payloadProfile.data?payloadProfile.data.display_name:''}</Text>
             </View>
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
@@ -1117,21 +1260,21 @@ class DashboardScreen extends Component {
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
                 { 
-                  this.setState({selectedMenu: 'REPORT'}) 
+                  this.setState({selectedMenu: 'CART'}) 
                   this.toggleOverlay()
                  
                 }}>
               <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
-              <Text style={styles.textMenuSidebar} >Report</Text>
+              <Text style={styles.textMenuSidebar} >Cart</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
                 {
-                  this.setState({selectedMenu: 'ANALYZER'}) 
+                  this.setState({selectedMenu: 'HISTORY'}) 
                   this.toggleOverlay()
                 }}>
               <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
-              <Text style={styles.textMenuSidebar} >Analyzer</Text>
+              <Text style={styles.textMenuSidebar} >History</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
@@ -1165,6 +1308,214 @@ class DashboardScreen extends Component {
             </TouchableOpacity>
             
         </Overlay>
+        {/* add address */}
+
+        <Overlay isVisible={addAdress} onBackdropPress={()=> this.setState({addAdress: !addAdress})} overlayStyle={{padding:20, width:'90%',borderRadius:12}}>
+            <ScrollView>
+            <Text>Nama Alamat</Text>
+            <TextInput
+            value={createAddress.address_label}
+            multiline = {true}
+            placeholder={'Nama Tempat'}
+            placeholderTextColor={'#2D4070'}
+            style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+            onChangeText={note => this.setState({
+              createAddress: {
+                ...createAddress,
+                address_label:note
+              }
+            })}
+            numberOfLines={1}
+            ></TextInput>
+            <Text>Alamat</Text>
+            <TextInput
+            value={createAddress.address_line1}
+            multiline = {true}
+            placeholder={'Alamat'}
+            placeholderTextColor={'#2D4070'}
+            style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+            onChangeText={note => this.setState({
+              createAddress: {
+                ...createAddress,
+                address_line1:note
+              }
+            })}
+            numberOfLines={2}
+            ></TextInput>
+            <Text>Detail Alamat</Text>
+            <TextInput
+            value={createAddress.address_line2}
+            multiline = {true}
+            placeholder={'Detail Alamat'}
+            placeholderTextColor={'#2D4070'}
+            style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+            onChangeText={note => this.setState({
+              createAddress: {
+                ...createAddress,
+                address_line2:note
+              }
+            })}
+            numberOfLines={2}
+            ></TextInput>
+            <Text>Provinsi</Text>
+              <Picker
+                selectedValue={createAddress.province_id}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) =>this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    province_id:itemValue
+                  }
+                })}
+                prompt="Pilih Provinsi"
+              >
+                  {
+                  province && province.data && province.data.length>0?
+                  province.data.map((data,index)=>{
+                    return <Picker.Item label={data.nama} value={data.id} />
+                  })
+                  :null
+                } 
+              </Picker>
+            <Text>Kota/Kabupaten</Text>
+            <Picker
+                selectedValue={createAddress.city_id}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) =>this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    city_id:itemValue
+                  }
+                })}
+                prompt="Pilih Kota/Kabupaten"
+              >
+                  {
+                  cities && cities.data && cities.data.length>0?
+                  cities.data.map((data,index)=>{
+                    return <Picker.Item label={data.nama} value={data.id} />
+                  })
+                  :null
+                } 
+              </Picker>
+            <Text>Kecamatan</Text>
+            <Picker
+                selectedValue={createAddress.district_id}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) =>this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    district_id:itemValue
+                  }
+                })}
+                prompt="Pilih Kota/Kabupaten"
+              >
+                  {
+                  district && district.data && district.data.length>0?
+                  district.data.map((data,index)=>{
+                    return <Picker.Item label={data.nama} value={data.id} />
+                  })
+                  :null
+                } 
+              </Picker>
+            <Text>Desa</Text>
+            <Picker
+                selectedValue={createAddress.subdistrict_id}
+                style={{ height: 50, width: 150 }}
+                onValueChange={(itemValue, itemIndex) =>this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    subdistrict_id:itemValue
+                  }
+                })}
+                prompt="Pilih Desa"
+              >
+                  {
+                  subdistrict && subdistrict.data && subdistrict.data.length>0?
+                  subdistrict.data.map((data,index)=>{
+                    return <Picker.Item label={data.nama} value={data.id} />
+                  })
+                  :null
+                } 
+              </Picker>
+            <Text>Kode Pos</Text>
+              <TextInput
+              value={createAddress.zip_code}
+              multiline = {true}
+              keyboardType={'number-pad'}
+              placeholder={'Kode Pos'}
+              placeholderTextColor={'#2D4070'}
+              style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+              onChangeText={note => this.setState({
+                createAddress: {
+                  ...createAddress,
+                  zip_code:note
+                }
+              })}
+              numberOfLines={1}
+              ></TextInput>
+            <Text>Catatan</Text>
+              <TextInput
+                value={createAddress.notes}
+                multiline = {true}
+                placeholder={'Catatan'}
+                placeholderTextColor={'#2D4070'}
+                style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+                onChangeText={note => this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    notes:note
+                  }
+                })}
+                numberOfLines={3}
+                ></TextInput>
+            <Text>Nomor HP</Text>
+            <TextInput
+                value={createAddress.phone_no}
+                multiline = {true}
+                keyboardType={'number-pad'}
+                placeholder={'Phone Number'}
+                placeholderTextColor={'#2D4070'}
+                style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070',borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'100%',height:50,textAlign:'auto'}}
+                onChangeText={note => this.setState({
+                  createAddress: {
+                    ...createAddress,
+                    phone_no:note
+                  }
+                })}
+                numberOfLines={3}
+                ></TextInput>
+            
+            <TouchableOpacity 
+            
+            style={{width:'60%', borderRadius:12,backgroundColor:'#2D4070',justifyContent:'center',alignItems:'center', marginTop:12, padding:12}}
+            onPress={async()=> {
+              // alert(JSON.stringify(createAddress))
+           await  addAddressRequest({
+              auth:this.props.auth.data.access_token, 
+              body:createAddress
+            })
+
+          await addressRequest(this.props.auth.data.access_token)  
+            this.setState({createAddress:{
+              address_label: "",
+              address_line1: "",
+              address_line2: "",
+              province_id: "",
+              city_id: "",
+              district_id: "",
+              subdistrict_id: "",
+              zip_code: "",
+              notes: "",
+              phone_no: ""
+            }})
+            this.setState({addAdress: !addAdress})
+              }
+            }
+            >
+            <Text style={{color:"white"}}>Submit Address</Text>
+            </TouchableOpacity>
+            </ScrollView>
+          </Overlay>
       </View>
     )
   }
@@ -1183,7 +1534,12 @@ const mapStateToProps = (state) => {
     listPayment:state.listPayment.payload,
     listLogistic: state.listLogistic.payload,
     getorder: state.getorder.payload,
-    checkoutorder: state.checkoutorder.payload
+    checkoutorder: state.checkoutorder.payload,
+    province: state.province.payload,
+    cities: state.cities.payload,
+    district: state.district.payload,
+    subdistrict: state.subdistrict.payload,
+    historyOrder: state.historyOrder.payload
   }
 }
 
@@ -1204,7 +1560,13 @@ const mapDispatchToProps = (dispatch) => {
       AddressRedux,
       LogisticRedux,
       GetOrderRedux,
-      CheckoutOrderRedux
+      CheckoutOrderRedux,
+      AddAddressRedux,
+      ProviceRedux,
+      CitiesRedux,
+      DistrictRedux,
+      SubDistrictRedux,
+      HistoryOrderRedux
       ) , dispatch)
 }
 

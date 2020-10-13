@@ -1,5 +1,7 @@
 import { createAppContainer } from 'react-navigation'
+import ProfileScreen from '../Containers/ProfileScreen'
 import { createStackNavigator } from 'react-navigation-stack';
+import DetailProductScreen from '../Containers/DetailProductScreen'
 import DashboardScreen from '../Containers/DashboardScreen'
 import OnBoardingScreen from '../Containers/OnBoardingScreen'
 import SingupScreen from '../Containers/SingupScreen'
@@ -10,6 +12,8 @@ import styles from './Styles/NavigationStyles'
 
 // Manifest of possible screens
 const PrimaryNav = createStackNavigator({
+  ProfileScreen: { screen: ProfileScreen },
+  DetailProductScreen: { screen: DetailProductScreen },
   DashboardScreen: { screen: DashboardScreen },
   OnBoardingScreen: { screen: OnBoardingScreen },
   SingupScreen: { screen: SingupScreen },

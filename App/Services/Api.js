@@ -55,6 +55,13 @@ const create = (baseURL = URL) => {
   const getlistlogistic =(payload)=> api.get('/mt/getlistlogistics')
   const getorder =(payload)=> api.post('/mt/getorder',{}, { headers: { Authorization: payload } } )
   const checkoutorder =(payload)=> api.post('/mt/checkoutorder',payload.body,{ headers: { Authorization: payload.auth } })
+  const addaddress=(payload)=> api.post('/mt/addaddressuser',payload.body,{ headers: { Authorization: payload.auth } })
+  const getprovince=(payload)=> api.get('/mt/province',{}, { headers: { Authorization: payload } })
+  const getcities=(payload)=> api.get('/mt/city/'+payload.body,{}, { headers: { Authorization: payload.auth } })
+  const getdistrict=(payload)=> api.get('/mt/district/'+payload.body,{}, { headers: { Authorization: payload.auth } })
+  const getsubdistrict=(payload)=> api.get('/mt/subdistrict/'+payload.body,{}, { headers: { Authorization: payload.auth } })
+  const getdetailproduct= (payload)=> api.post('/mt/detail',payload.body,{ headers: { Authorization: payload.auth } })
+  const gethistoryorder=(payload) => api.post('/mt/listorderhistory',{}, { headers: { Authorization: payload } } )
   // ------
   // STEP 3
   // ------
@@ -87,7 +94,14 @@ const create = (baseURL = URL) => {
     getaddressuser,
     getlistlogistic,
     getorder,
-    checkoutorder
+    checkoutorder,
+    addaddress,
+    getprovince,
+    getcities,
+    getdistrict,
+    getsubdistrict,
+    getdetailproduct,
+    gethistoryorder
   }
 }
 

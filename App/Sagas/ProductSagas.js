@@ -19,6 +19,7 @@ import DeleteCartRedux from '../Redux/DeleteCartRedux'
 import ClearCartRedux from '../Redux/ClearCartRedux'
 import reactotron from 'reactotron-react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
+import { Alert } from 'react-native'
 // import { ProductSelectors } from '../Redux/ProductRedux'
 
 export function * getProduct (api, action) {
@@ -75,8 +76,10 @@ export function * getAddCart (api, action) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
     yield put(CartRedux.cartSuccess(response.data))
+    Alert.alert("Add Cart Berhasil","silahkan check barang anda di menu Report")
   } else {
     yield put(CartRedux.cartFailure())
+    Alert.alert("Yah , Gagal ... :(","menambahkan item kedalam keranjang gagal , mohon periksa kembali koneksi anda atau dapat hubungi tim developer kami")
   }
 }
 
@@ -94,6 +97,7 @@ export function * getUpdateCart (api, action) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
     yield put(UpdateCartRedux.updateCartSuccess(response.data))
+    Alert.alert("Update Barang Berhasil","Pastikan kembali barang yang anda simpan")
   } else {
     yield put(UpdateCartRedux.updateCartFailure())
   }
@@ -112,6 +116,7 @@ export function * getDeleteCart (api, action) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
     yield put(DeleteCartRedux.deleteCartSuccess(response.data))
+    Alert.alert("Hapus Barang Berhasil","silahkan check kembali di menu Report")
   } else {
     yield put(DeleteCartRedux.deleteCartFailure())
   }
@@ -130,6 +135,8 @@ export function * getClearCart (api, action) {
   if (response.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
+    
+    Alert.alert("Cart Berhasil di bersihkan","Semua barang yang anda simpan di cart sudah hilang")
     yield put(ClearCartRedux.clearCartSuccess(response.data))
   } else {
     yield put(ClearCartRedux.clearCartFailure())
