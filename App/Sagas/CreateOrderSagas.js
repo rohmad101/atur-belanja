@@ -18,6 +18,7 @@ import  LogisticRedux  from '../Redux/LogisticRedux'
 import  GetOrderRedux  from '../Redux/GetOrderRedux'
 import  CheckoutOrderRedux  from '../Redux/CheckoutOrderRedux'
 import  HistoryOrderRedux  from '../Redux/HistoryOrderRedux'
+import { Alert } from 'react-native'
 
 export function * getCreateOrder (api, action) {
   const { data } = action
@@ -115,7 +116,7 @@ export function * checkoutOrder(api, action) {
   if (response.ok) {
     // You might need to change the response here - do this with a 'transform',
     // located in ../Transforms/. Otherwise, just pass the data back from the api.
-  Alert.alert("Checkout Berhasil",response.data.checkoutorder.notes)
+    Alert.alert("Checkout Berhasil",response.data.notes)
     yield put(CheckoutOrderRedux.checkoutOrderSuccess(response.data))
   } else {
     yield put(CheckoutOrderRedux.checkoutOrderFailure())

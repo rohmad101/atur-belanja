@@ -183,13 +183,19 @@ class DashboardScreen extends Component {
         // alert(JSON.stringify(auth.payload.data.authorization_code))
         // reactotron.log('auth',auth)
         logisticRequest(auth.data.access_token)  
-        addressRequest(auth.data.access_token)  
+        setTimeout(() => {
+          addressRequest(auth.data.access_token) 
+        }, 250);
+         
       } 
       if(this.state.selectedMenu === 'PAYMENT') {
         // alert(JSON.stringify(auth.payload.data.authorization_code))
         // reactotron.log('auth',auth)
         paymentRequest(auth.data.access_token)  
-        getOrderRequest(auth.data.access_token)
+        setTimeout(() => {
+          getOrderRequest(auth.data.access_token)
+        }, 250);
+        
       } 
       if(this.state.selectedMenu === 'HISTORY') {
         // alert(JSON.stringify(auth.payload.data.authorization_code))
@@ -823,7 +829,9 @@ class DashboardScreen extends Component {
         <View style={{width:'100%', justifyContent:'flex-end', alignItems:'center',flexDirection:'row'}}>
         <Text onPress={()=>{
               this.props.clearCartRequest(this.props.auth.data.access_token)
-              this.props.listCartRequest(this.props.auth.data.access_token) 
+              setTimeout(() => {
+                this.props.listCartRequest(this.props.auth.data.access_token) 
+                }, 1000); 
             }
               } style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingVertical:10,borderRadius:8,width:'30%',textAlign:'center'}}>Clear Cart</Text>
         </View>
@@ -852,7 +860,9 @@ class DashboardScreen extends Component {
                     "product_id" : listItem.product_id
                   }
                 })
+                setTimeout(() => {
                 this.props.listCartRequest(this.props.auth.data.access_token) 
+                }, 1000);
               }
               } 
                 style={{color: 'white',fontSize: 16,backgroundColor:'red',paddingTop:10,borderRadius:8,width:'30%',textAlign:'center',marginRight:12}}>Delete</Text>
@@ -872,7 +882,9 @@ class DashboardScreen extends Component {
                 "quantity": qty[index]
                 }
               })
-              this.props.listCartRequest(this.props.auth.data.access_token) 
+              setTimeout(() => {
+                this.props.listCartRequest(this.props.auth.data.access_token) 
+                }, 1000);
             }
               } style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:10,borderRadius:8,width:'30%',textAlign:'center'}}>Update</Text>
             </View>
