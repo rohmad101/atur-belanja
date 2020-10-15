@@ -630,7 +630,7 @@ class DashboardScreen extends Component {
                   <Text style={{color:'#2D4070', fontWeight:'bold', fontSize:16,paddingBottom:8}}>{listItem.name}</Text>
                   <Text style={{color:'#2D4070',paddingVertical:6}}>Rp {listItem.price}</Text>
                   <View style={{flexDirection:'row',width:'70%',justifyContent:'space-between'}}>
-                    <Text style={{color:'#2D4070'}}>Stock: 5</Text>
+                    <Text style={{color:'#2D4070'}}>Stock: {listItem.stock}</Text>
                     <Text style={{color: 'white',fontSize: 12,backgroundColor:'#6A8E78',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>Variant</Text>
                     <Text style={{color: 'black',fontSize: 12,backgroundColor:'#E3CA43',paddingVertical:2,paddingHorizontal:12,borderRadius:8}}>OwnStock</Text>
                   </View>
@@ -918,6 +918,7 @@ class DashboardScreen extends Component {
                  <Text style={{color:'#2D4070',paddingVertical:6}}>Status Pembayaran:  {listItem.status_pembayaran}</Text>
                  <Text style={{color:'#2D4070',paddingVertical:6}}>Status Pengiriman:  {listItem.status_pengiriman}</Text>
                  <Text style={{color:'#2D4070',paddingVertical:6}}>Tanggal Pemesanan:  {listItem.tanggal_pemesanan}</Text>
+                 <Text style={{color:'#2D4070',paddingVertical:6}}>Note:  {listItem.notes}</Text>
               </View>
             </View>
          </View>
