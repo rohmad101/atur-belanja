@@ -164,7 +164,7 @@ class DashboardScreen extends Component {
     
     if(auth){
       if(prevState.selectedMenu !== this.state.selectedMenu){
-        if(this.state.selectedMenu === 'SETTINGS') {
+        if(this.state.selectedMenu === 'AKUN') {
               // alert(JSON.stringify(auth.payload.data.authorization_code))
               // reactotron.log('auth',auth)
               profileRequest(auth.data.access_token)
@@ -776,7 +776,7 @@ class DashboardScreen extends Component {
             selectedValue={payment}
             style={{ height: 50, width: 150 }}
             onValueChange={(itemValue, itemIndex) =>this.setState({payment:itemValue})}
-            prompt="Pilih Alamat"
+            prompt="Pilih Payment"
           >
             {
               listPayment && listPayment.message && listPayment.message.length>0?
@@ -943,7 +943,7 @@ class DashboardScreen extends Component {
       </View>
     )
   }
-  Settings =(visible)=>{
+  Akun =(visible)=>{
     const {payloadProfile, navigation} = this.props
     if(payloadProfile && payloadProfile.data) {
       const {user_id,username,email,display_name,roles,status,created_at,update_at} = payloadProfile.data
@@ -1216,8 +1216,8 @@ class DashboardScreen extends Component {
           this.Mutasi(visible):null
          }
          {
-          selectedMenu === 'SETTINGS'?
-          this.Settings(visible):
+          selectedMenu === 'AKUN'?
+          this.Akun(visible):
           null
          }
         </KeyboardAvoidingView>
@@ -1312,12 +1312,12 @@ class DashboardScreen extends Component {
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
                 {
-                  this.setState({selectedMenu: 'SETTINGS'}) 
+                  this.setState({selectedMenu: 'AKUN'}) 
                   this.toggleOverlay()
                 }
               }>
               <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
-              <Text style={styles.textMenuSidebar} >Settings</Text>
+              <Text style={styles.textMenuSidebar} >Akun</Text>
             </TouchableOpacity>
             
         </Overlay>
@@ -1501,14 +1501,15 @@ class DashboardScreen extends Component {
             <TouchableOpacity 
             
             style={{width:'60%', borderRadius:12,backgroundColor:'#2D4070',justifyContent:'center',alignItems:'center', marginTop:12, padding:12}}
-            onPress={async()=> {
+            onPress={()=> {
               // alert(JSON.stringify(createAddress))
-           await  addAddressRequest({
+            addAddressRequest({
               auth:this.props.auth.data.access_token, 
               body:createAddress
             })
-
-          await addressRequest(this.props.auth.data.access_token)  
+            setTimeout(() => { 
+              this.props.addressRequest(this.props.auth.data.access_token) 
+            }, 500); 
             this.setState({createAddress:{
               address_label: "",
               address_line1: "",

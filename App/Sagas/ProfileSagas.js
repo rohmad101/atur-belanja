@@ -18,6 +18,7 @@ import ProviceRedux from '../Redux/ProviceRedux'
 import CitiesRedux from '../Redux/CitiesRedux'
 import DistrictRedux from '../Redux/DistrictRedux'
 import SubDistrictRedux from '../Redux/SubDistrictRedux'
+import { Alert } from 'react-native'
 // import { ProfileSelectors } from '../Redux/ProfileRedux'
 
 export function * getProfile (api, action) {
