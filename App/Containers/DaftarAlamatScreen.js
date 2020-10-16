@@ -30,7 +30,7 @@ function DaftarAlamatScreen (props){
   const [notes,setnotes] = useState('')
   const [phone_no,setphone_no] = useState('')
   const [createAddress,setcreateAddress]= useState({})
-  const { navigation,province,cities,district,subdistrict,auth,proviceRequest,citiesRequest,districtRequest,subDistrictRequest,addressRequest,listAddress }=props
+  const { navigation,province,cities,district,subdistrict,auth,proviceRequest,citiesRequest,districtRequest,subDistrictRequest,addressRequest,listAddress,addAddressRequest }=props
   const {width, heigth}= Dimensions.get('screen')
   useEffect(()=>{
     proviceRequest(auth.data.access_token)

@@ -6,7 +6,7 @@ import { Overlay } from "react-native-elements"
 export const AddAddress =({
     addAdress,submit,address_label,address_line1,address_line2, province_id,city_id,district_id,subdistrict_id,phone_no,zip_code,notes,
     province,cities,district,subdistrict,
-    setaddAdress,setaddress_label,setprovince_id,setcity_id,setdistrict_id,setsubdistrict_id
+    setaddAdress,setaddress_label,setprovince_id,setcity_id,setdistrict_id,setsubdistrict_id,setaddress_line1,setaddress_line2,setzip_code,setnotes,setphone_no
 })=>{
     // createAddress:{
     //     address_label: "",
