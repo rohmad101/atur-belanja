@@ -24,7 +24,7 @@ const PrimaryNav = createStackNavigator({
 }, {
   // Default config for all screens
   headerMode: 'none',
-  initialRouteName: 'ProfileScreen',
+  initialRouteName: 'OnBoardingScreen',
   navigationOptions: {
     headerStyle: styles.header
   }
