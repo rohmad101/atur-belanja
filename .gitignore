@@ -30,18 +30,18 @@ project.xcworkspace
 /packages/rn-tester/android/app/gradle/
 /packages/rn-tester/android/app/gradlew
 /packages/rn-tester/android/app/gradlew.bat
-/android/build/
-/android/gradle/
-/android/gradlew
-/android/gradlew.bat
+/ReactAndroid/build/
+/ReactAndroid/gradle/
+/ReactAndroid/gradlew
+/ReactAndroid/gradlew.bat
 
 # Buck
 .buckd
 buck-out
 /.lsp.buckd
 /.lsp-buck-out
-/android/src/main/jni/prebuilt/lib/
-/android/src/main/gen
+/ReactAndroid/src/main/jni/prebuilt/lib/
+/ReactAndroid/src/main/gen
 
 # Android Studio
 .project
@@ -58,7 +58,6 @@ local.properties
 *.iml
 /android/
 android
-
 # Node
 node_modules
 *.log
