@@ -42,6 +42,15 @@ const images = {
   more: require('../Images/Icons/more.png'),
   add: require('../Images/Icons/Add.png'),
   filter: require('../Images/Icons/filter.png'),
+  dashboard: require('../Images/Icons/dashboard.png'),
+  mutasi: require('../Images/Icons/mutasi.png'),
+  addons: require('../Images/Icons/addons.png'),
+  history: require('../Images/Icons/history.png'),
+  cart: require('../Images/Icons/cart.png'),
+  payment: require('../Images/Icons/payment.png'),
+  order: require('../Images/Icons/order.png'),
+  product: require('../Images/Icons/product.png'),
+  setting: require('../Images/Icons/setting.png'),
   
 
 }

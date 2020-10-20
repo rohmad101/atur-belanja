@@ -18,7 +18,7 @@ class ProfileScreen extends Component {
      <Header
             leftComponent={<TouchableOpacity onPress={()=>navigation.goBack()}><Icon name="chevron-left" color="white" size={40}></Icon></TouchableOpacity>}
             centerComponent={{ text: 'Atur Akun', style: { color: '#fff', fontSize:20 } }}
-            containerStyle={{alignItems:'center', justifyContent:'center'}}
+            containerStyle={{alignItems:'center', justifyContent:'center',backgroundColor:'#50E348'}}
           />
       <View style={{flexDirection:'column',width:'100%'}}>
       <TouchableOpacity onPress={()=>Alert.alert('Still on Development')}>

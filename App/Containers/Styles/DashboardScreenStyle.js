@@ -74,7 +74,7 @@ export default StyleSheet.create({
     borderRadius:20,
     marginLeft:18
   },
-  textMenuSidebar:{color:'white',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'},
+  textMenuSidebar:{color:'white',fontSize:16,lineHeight:25, fontWeight:'600',width:'50%'},
   avatarContainer: {
     borderColor: '#9B9B9B',
     borderWidth: 1 / PixelRatio.get(),

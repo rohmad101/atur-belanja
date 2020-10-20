@@ -54,7 +54,7 @@ class LoginScreen extends Component {
               onPress={() =>this.props.navigation.navigate('SingupScreen')}
               style={{alignItems:'center'}}
             >
-                <Text style={{color:'#395573',fontSize:18,fontWeight:'bold'}}>SING UP</Text>
+                <Text style={{color:'#395573',fontSize:14,fontWeight:'bold'}}>SING UP</Text>
             </TouchableOpacity>
           }
           backgroundColor={'#fff'}
@@ -62,7 +62,7 @@ class LoginScreen extends Component {
         /> 
         <View style={{width:'100%', alignItems:'center'}}>
           <Image source={Images.background_login} style={styles.logo} />
-        <Text style={{fontSize:26,color:'#395573',fontWeight:'bold', lineHeight:24,paddingBottom:24,marginTop:-30}}>Sell more, easier</Text>
+        <Text style={{fontSize:26,color:'#395573',fontWeight:'bold',paddingBottom:24, marginTop:-30}}>Sell more, easier</Text>
         <Input
           placeholder='Email/Username'
           leftIcon={
@@ -72,7 +72,7 @@ class LoginScreen extends Component {
           errorMessage={null}
           value={this.state.email} 
           onChangeText={(email=>this.setState({email}))}
-          containerStyle={{width:'60%', borderWidth:2,borderColor:'#50E348',borderRadius:8,height:50}}
+          containerStyle={{width:'80%', borderWidth:2,borderColor:'#50E348',borderRadius:8,height:50}}
         />
         <Input 
           placeholder="Password" 
@@ -80,17 +80,17 @@ class LoginScreen extends Component {
           leftIcon={
           <Image source={Images.password_icon} style={{width:48,height:48,marginRight:12}}/>
         }
-          containerStyle={{width:'60%', borderWidth:2,borderColor:'#50E348',borderRadius:8,marginTop:24,height:50}}
+          containerStyle={{width:'80%', borderWidth:2,borderColor:'#50E348',borderRadius:8,marginTop:24,height:50}}
           value={this.state.password} 
           onChangeText={(password=>this.setState({password}))}
         />
-        <TouchableOpacity onPress={()=> Alert.alert('Whooopss !!',' On Development')}>
+        <TouchableOpacity onPress={()=> Alert.alert('Whooopss !!',' On Development')} style={{padding:12}}>
           <Text>Forgot Password ?</Text>
         </TouchableOpacity>
         </View>
         <View style={{justifyContent:'space-around',alignItems:'center',flexDirection:'row',width:'100%'}}>
           <TouchableOpacity
-            style={{width:width*0.24,alignItems:'center',padding:10, backgroundColor:'#2D4070', borderRadius:8,marginTop:12}}
+            style={{width:width*0.44,alignItems:'center',padding:10, backgroundColor:'#2D4070', borderRadius:8}}
             onPress={() =>this.Submit()}
           >
             <Text style={{color:'white'}}>SIGN IN</Text>
@@ -98,7 +98,7 @@ class LoginScreen extends Component {
         </View>
         <Divider style={{ backgroundColor: 'grey',width:'100%',marginTop:20 }} />
         <Text style={{marginTop:-12,paddingHorizontal:24, backgroundColor:'white'}}>or</Text>
-        <View style={{width:'100%',justifyContent:'space-around',flexDirection:'row',marginTop:48}}>
+        <View style={{width:'100%',justifyContent:'space-around',flexDirection:'row',marginTop:32}}>
           <View style={{justifyContent:'space-around',flexDirection:'row',alignItems:'center',borderWidth:2,borderColor:'#50E348',paddingRight:20,borderRadius:8}}>
             <Image source={Images.icon_google} style={{width:48,height:48,marginRight:12}}/>
             <Text style={{fontSize:24,color:'grey'}}>Google</Text>

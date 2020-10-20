@@ -319,22 +319,30 @@ class DashboardScreen extends Component {
             {/* menu atas */}
             <View style={{width:'100%',height:150,flexDirection:'row',alignItems:'center',alignItems:'center',justifyContent:'center'}}>
               <View style={{alignItems:'center',width:'30%'}}>
-                <Image source={Images.icon_add} style={{width:60,height:60}}/>
+                <View style={{ borderRadius:40, backgroundColor:'white', height:60, width:60, justifyContent:'center',alignItems:'center'}}>
+                  <Image source={{uri:'https://cdn3.iconfinder.com/data/icons/eightyshades/512/14_Add-512.png'}}  style={{width:40,height:40}}/>
+                </View>
                 <Text style={{color:'#fff',marginTop:8}}>Add Product</Text>
               </View>
               <View style={{alignItems:'center',width:'30%'}}>
-                <Image source={Images.icon_shipping} style={{width:60,height:60}}/>
+                <View style={{ borderRadius:40, backgroundColor:'white', height:60, width:60, justifyContent:'center',alignItems:'center'}}>
+                  <Image source={{uri:'https://image.shutterstock.com/image-vector/fast-moving-shipping-delivery-truck-260nw-1202562907.jpg'}}  style={{width:40,height:40}}/>
+                </View>
                 <Text style={{color:'#fff',marginTop:8,textAlign:'center'}} numberOfLines={2}>Arrage{'\n'} Your Shipping</Text>
               </View>
               <View style={{alignItems:'center',width:'30%'}}>
-               <Image source={Images.icon_order} style={{width:60,height:60}}/>
+                <View style={{ borderRadius:40, backgroundColor:'white', height:60, width:60, justifyContent:'center',alignItems:'center'}}>
+                  <Image source={{uri:'https://e7.pngegg.com/pngimages/936/444/png-clipart-computer-icons-icon-design-order-icon-cdr-angle.png'}}  style={{width:40,height:40}}/>
+                </View>
                <Text style={{color:'#fff',marginTop:8,textAlign:'center'}} numberOfLines={2}>Your{'\n'} First Order</Text>
               </View>
             </View>
             {/* menu bawah */}
             <View style={{width:'100%',height:150, flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
               <View style={{alignItems:'center',width:'30%'}}>
-                <Image source={Images.icon_courier} style={{width:60,height:60}}/>
+                <View style={{ borderRadius:40, backgroundColor:'white', height:60, width:60, justifyContent:'center',alignItems:'center'}}>
+                  <Image source={{uri:'https://cdn5.vectorstock.com/i/1000x1000/56/44/delivery-courier-scooter-symbol-box-icon-concept-vector-10455644.jpg'}}  style={{width:40,height:40}}/>
+                </View>
                 <Text style={{color:'#fff',marginTop:8,textAlign:'center'}} numberOfLines={2}>Choose Courier</Text>
               </View>
               <View style={{alignItems:'center',width:'30%'}}>
@@ -342,7 +350,10 @@ class DashboardScreen extends Component {
                 <Text style={{color:'#fff',marginTop:8,textAlign:'center'}} numberOfLines={2}>Addons{'\n'} Functionality</Text>
               </View>
               <View style={{alignItems:'center',width:'30%'}}>
-                <Image source={Images.icon_more} style={{width:60,height:60}}/>
+                <View style={{ borderRadius:40, backgroundColor:'white', height:60, width:60, justifyContent:'center',alignItems:'center'}}>
+                <Image source={{uri:'https://image.flaticon.com/icons/png/512/64/64576.png'}}  style={{width:40,height:40}}/>
+                </View>
+                
                <Text style={{color:'#fff',marginTop:8,textAlign:'center'}} numberOfLines={2}>More</Text>
               </View>
             </View>
@@ -453,7 +464,7 @@ class DashboardScreen extends Component {
                 {/* Aricle Suggestions */}
                 <View style={{width:'100%',height:80,flexDirection:'row'}}>
                     <View style={{width:'70%',justifyContent:'center',alignItems:'center', backgroundColor:'#50E348',height:'100%', borderTopRightRadius:20,borderBottomRightRadius:20, borderBottomColor:'rgba(0, 0, 0, 0.25)', borderBottomWidth:2}}>
-                      <Text style={{fontSize:32,fontWeight:'bold',fontStyle:'italic',lineHeight:32}}>Article Suggestions</Text>
+                      <Text style={{fontSize:32,fontWeight:'bold',fontStyle:'italic',lineHeight:32, paddingLeft:24}}>Article Suggestions</Text>
                     </View>
                     <View style={{width:'30%',justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
                         <Text style={{fontWeight:'700',lineHeight:13}}>See All</Text>
@@ -641,9 +652,9 @@ class DashboardScreen extends Component {
             <View style={{flexDirection:'row',width:'100%',justifyContent:'flex-end'}}>
               <TextInput
               value={qty[index]}
-              placeholder={'input qty'}
-              placeholderTextColor={'#fff'}
-              style={{color: 'white',fontSize: 16,backgroundColor:'#2D4070',paddingTop:6,borderRadius:8,marginRight:12,width:'30%',textAlign:'center'}}
+              placeholder={'0'}
+              placeholderTextColor={'#2D4070'}
+              style={{color: '#2D4070',fontSize: 16,borderColor:'#2D4070', borderWidth:1,paddingTop:6,borderRadius:8,marginRight:12,width:'30%',textAlign:'center'}}
               onChangeText={jumlah => qty[index]=jumlah}
               />
               <Text onPress={()=>{
@@ -698,6 +709,7 @@ class DashboardScreen extends Component {
           <Picker
             selectedValue={Alamat}
             style={{ height: 50, width: 150 }}
+            mode={'dialog'}
             onValueChange={(itemValue, itemIndex) =>this.setState({Alamat:itemValue})}
             prompt="Pilih jenis Pengiriman"
           >
@@ -746,10 +758,11 @@ class DashboardScreen extends Component {
         <Picker
                 selectedValue={orderId}
                 style={{ height: 50, width: 150 }}
+                mode={'dialog'}
                 onValueChange={(itemValue, itemIndex) =>this.setState({
                   orderId: itemValue
                 })}
-                prompt="Pilih Kota/Kabupaten"
+                prompt="Pilih Nomor Order"
               >
                   {
                   getorder && getorder.data && getorder.data.length>0?
@@ -777,6 +790,7 @@ class DashboardScreen extends Component {
             style={{ height: 50, width: 150 }}
             onValueChange={(itemValue, itemIndex) =>this.setState({payment:itemValue})}
             prompt="Pilih Payment"
+            mode={'dialog'}
           >
             {
               listPayment && listPayment.message && listPayment.message.length>0?
@@ -951,7 +965,7 @@ class DashboardScreen extends Component {
         <ScrollView>
         <View style={{flex:1,margin:12,paddingVertical:12, }}>
             <TouchableOpacity style={{width:'100%', flexDirection:'row'}} onPress={()=> navigation.navigate('ProfileScreen')}>
-              <Image style={{width:60,height:60}} source={Images.clearLogo} PlaceholderContent={<ActivityIndicator />}/>
+              <Image style={{width:60,height:60}} source={{uri:'https://www.dc.edu/wp-content/uploads/2014/03/person-icon.png'}} PlaceholderContent={<ActivityIndicator />}/>
               <View style={{justifyContent:'center'}}>
                 <Text style={{fontWeight:'bold',paddingLeft:8}}>{display_name}</Text>
                 <View style={{flexDirection:'row'}}>
@@ -1084,7 +1098,7 @@ class DashboardScreen extends Component {
                 <Icon name="chevron-right"  style={{width:20,height:20}}/>
             </View> 
             {/* Atur toko care */}
-            <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5, paddingBottom:20}}>
+            <View style={{flexDirection:'column',padding:12, width:'100%',alignSelf:'baseline', borderBottomWidth:0.5}}>
               <Text style={{fontWeight:'700',fontSize:20,paddingVertical:12}}>AturToko Care</Text>
               <View style={{flexDirection:'row',width:'100%',alignItems:'center',justifyContent:'space-between'}}>
                 <View style={{flexDirection:'column'}}>
@@ -1095,7 +1109,7 @@ class DashboardScreen extends Component {
               </View>  
             </View>  
   
-            <View style={styles.body}>
+            <View style={{marginBottom:20}}>
               <View style={styles.bodyContent}>
                 
                 {/* <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
@@ -1231,7 +1245,7 @@ class DashboardScreen extends Component {
           >
             <View style={{width:'100%',height:'12%',flexDirection:'row',alignItems:'center',justifyContent:'space-around',padding:10,paddingVertical:20}}>
               <Image source={Images.user_icon} style={{width:40,height:40, borderRadius:20}} />
-              <Text style={{color:'#2C7D28',fontSize:20,lineHeight:25, fontWeight:'700',width:'50%'}} numberOfLines={3}>{payloadProfile&&payloadProfile.data?payloadProfile.data.display_name:''}</Text>
+              <Text style={{color:'#2C7D28',fontSize:14,lineHeight:25, fontWeight:'700',width:'70%',paddingLeft:12}} numberOfLines={3}>{payloadProfile&&payloadProfile.data?payloadProfile.data.display_name:''}</Text>
             </View>
             <TouchableOpacity style={styles.sideBar} 
               onPress={()=>
@@ -1240,7 +1254,7 @@ class DashboardScreen extends Component {
                   this.toggleOverlay()
                 }
               }>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.dashboard} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Dashboard</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1249,7 +1263,7 @@ class DashboardScreen extends Component {
                   this.setState({selectedMenu: 'PRODUCT'}) 
                   this.toggleOverlay()
                 }}>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.product} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Product</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1258,7 +1272,7 @@ class DashboardScreen extends Component {
                   this.setState({selectedMenu: 'ORDER'}) 
                   this.toggleOverlay()
                 }}>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.order} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Order</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1267,7 +1281,7 @@ class DashboardScreen extends Component {
                   this.setState({selectedMenu: 'PAYMENT'}) 
                   this.toggleOverlay()
                 }}>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.payment} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Payment</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1277,7 +1291,7 @@ class DashboardScreen extends Component {
                   this.toggleOverlay()
                  
                 }}>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.cart} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Cart</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1286,7 +1300,7 @@ class DashboardScreen extends Component {
                   this.setState({selectedMenu: 'HISTORY'}) 
                   this.toggleOverlay()
                 }}>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.history} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >History</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1296,7 +1310,7 @@ class DashboardScreen extends Component {
                   this.toggleOverlay()
                 }
               }>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.addons} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Addons</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1306,7 +1320,7 @@ class DashboardScreen extends Component {
                   this.toggleOverlay()
                 }
               }>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.mutasi} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Mutasi</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.sideBar} 
@@ -1316,7 +1330,7 @@ class DashboardScreen extends Component {
                   this.toggleOverlay()
                 }
               }>
-              <Image source={Images.user_icon} style={styles.iconMenuSideBar} />
+              <Image source={Images.setting} style={styles.iconMenuSideBar} />
               <Text style={styles.textMenuSidebar} >Akun</Text>
             </TouchableOpacity>
             

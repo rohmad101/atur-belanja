@@ -70,23 +70,23 @@ function DaftarAlamatScreen (props){
     })
 },[address_label,address_line1,address_line2,province_id,city_id,district_id,subdistrict_id,zip_code,notes,phone_no])
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={[styles.container,{backgroundColor:'#455A90'}]}>
           <Header
             placement='left'
             leftComponent={<TouchableOpacity onPress={()=>navigation.pop()}><Icon name="chevron-left" color="white" size={40}></Icon></TouchableOpacity>}
             centerComponent={{ text: 'Daftar Alamat', style: { color: '#fff', fontSize:20 } }}
-            containerStyle={{alignItems:'center', justifyContent:'center'}}
+            containerStyle={{alignItems:'center', justifyContent:'center',backgroundColor:'#50E348'}}
           />
           <TouchableOpacity style={{width:'100%',justifyContent:'center',alignItems:'center'}}
             onPress={()=> setaddAdress(!addAdress)}
           >
-            <Text style={{ width:'80%', color:'white', borderRadius:12,backgroundColor:'blue', marginTop:12, padding:12,textAlign:'center'}}>+ Tambahkan Alamat Baru</Text>
+            <Text style={{ width:'80%', color:'white', borderRadius:12,backgroundColor:'#50E348', marginTop:12, padding:12,textAlign:'center'}}>+ Tambahkan Alamat Baru</Text>
           </TouchableOpacity>
           {listAddress && listAddress.data?
           listAddress.data.map(data =>(
-            <View style={{width:width*0.9, margin:width*0.05, minHeight:100, borderWidth:1.5,borderColor:'#D3D3D3', shadowColor:'grey'}}>
+            <View style={{width:width*0.9, margin:width*0.05, minHeight:100, borderWidth:1.5,borderColor:'#D3D3D3', shadowColor:'grey',backgroundColor:'white'}}>
               <View style={{width:'100%', flexDirection:'column', padding:12}}>
-                <Text>Alamat Rumah  {data.address_label}</Text>
+                <Text>{data.address_label}</Text>
                 <Text>{data.phone_no}</Text>
                 <Text>{data.address_line_1+' '+data.address_line_2 +','+ data.subdistrict_name+','+data.district_name+','+data.city_name+','+data.province_name}</Text>
               </View>
