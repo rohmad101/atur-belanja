@@ -1,6 +1,6 @@
 import { symbol } from 'prop-types'
 import React, { Component } from 'react'
-import { Text, KeyboardAvoidingView, Dimensions, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
+import { Text, KeyboardAvoidingView, Dimensions, TouchableOpacity, Alert, ActivityIndicator, PermissionsAndroid } from 'react-native'
 import { View } from 'react-native-animatable'
 import { SearchBar,Header,Divider,Image,Input } from 'react-native-elements';
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
@@ -13,6 +13,7 @@ import LoginActions from '../Redux/LoginRedux'
 // Styles
 import styles from './Styles/LoginScreenStyle'
 import { bindActionCreators } from 'redux'
+import Geolocation from '@react-native-community/geolocation';
 
 class LoginScreen extends Component {
   state = {
@@ -29,7 +30,19 @@ class LoginScreen extends Component {
     this.props.loginRequest(data)
     // Login(data)
   }
+   componentDidMount() {
+     Geolocation.requestAuthorization
+     Geolocation.getCurrentPosition((position) => {
+      let region = {
+        latitude:       position.coords.latitude,
+        longitude:      position.coords.longitude,
+        latitudeDelta:  0.00922*1.5,
+        longitudeDelta: 0.00421*1.5
+    }
+      alert(JSON.stringify(region))
+    })
   
+  }
   render () {
     const width = Dimensions.get('screen').width
     const heigth  =Dimensions.get('screen').height
